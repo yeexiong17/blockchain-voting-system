@@ -12,13 +12,14 @@ const Home = () => {
     useEffect(() => {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                () => {
-                    watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
-                        enableHighAccuracy: true,
-                        maximumAge: 0,
-                        timeout: 10000
-                    })
-                },
+                // () => {
+                //     watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
+                //         enableHighAccuracy: true,
+                //         maximumAge: 0,
+                //         timeout: 10000
+                //     })
+                // },
+                updateMap,
                 geolocationInaccessible,
                 {
                     enableHighAccuracy: true,
@@ -30,11 +31,11 @@ const Home = () => {
             alert('Your current browser does not support the Geolocation feature.')
         }
 
-        return () => {
-            if (watchIdRef.current !== null) {
-                navigator.geolocation.clearWatch(watchIdRef.current)
-            }
-        }
+        // return () => {
+        //     if (watchIdRef.current !== null) {
+        //         navigator.geolocation.clearWatch(watchIdRef.current)
+        //     }
+        // }
     }, [])
 
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
