@@ -11,11 +11,21 @@ const Home = () => {
 
     useEffect(() => {
         if (navigator.geolocation) {
-            watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: 10000
-            })
+            navigator.geolocation.getCurrentPosition(
+                () => {
+                    watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
+                        enableHighAccuracy: true,
+                        maximumAge: 0,
+                        timeout: 10000
+                    })
+                },
+                geolocationInaccessible,
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 10000
+                }
+            )
         } else {
             alert('Your current browser does not support the Geolocation feature.')
         }
