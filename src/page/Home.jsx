@@ -8,78 +8,80 @@ const Home = () => {
     const lastPositionRef = useRef(null)
     const DISTANCE_THRESHOLD = 10
 
-    useEffect(() => {
-        const calculateDistance = (lat1, lon1, lat2, lon2) => {
-            const R = 6371e3
-            const toRad = (deg) => (deg * Math.PI) / 180
-            const dLat = toRad(lat2 - lat1)
-            const dLon = toRad(lon2 - lon1)
+    const calculateDistance = (lat1, lon1, lat2, lon2) => {
+        const R = 6371e3
+        const toRad = (deg) => (deg * Math.PI) / 180
+        const dLat = toRad(lat2 - lat1)
+        const dLon = toRad(lon2 - lon1)
 
-            const a =
-                Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
-            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
+        const a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2)
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 
-            return R * c
+        return R * c
+    }
+
+    const geolocationInaccessible = (error) => {
+        alert("Error: ", error.message)
+    }
+
+    const updateMap = async (pos) => {
+        const { latitude, longitude } = pos.coords;
+
+        let locationObject = {
+            booking_id: 1,
+            latitude,
+            longitude
         }
 
-        const watcherId = navigator.geolocation.watchPosition(
-            async (pos) => {
-                const { latitude, longitude } = pos.coords;
+        if (lastPositionRef.current) {
+            // Calculate distance from the last position
+            const distance = calculateDistance(
+                lastPositionRef.current.latitude,
+                lastPositionRef.current.longitude,
+                latitude,
+                longitude
+            )
 
-                let locationObject = {
-                    booking_id: 1,
-                    latitude,
-                    longitude
-                }
+            if (distance >= DISTANCE_THRESHOLD) {
+                console.log("Significant position change:", { latitude, longitude })
 
-                if (lastPositionRef.current) {
-                    // Calculate distance from the last position
-                    const distance = calculateDistance(
-                        lastPositionRef.current.latitude,
-                        lastPositionRef.current.longitude,
-                        latitude,
-                        longitude
-                    )
+                // let res = await createNewLocation(locationObject)
+                // if (!res.success) alert("Something went wrong while updating location")
 
-                    if (distance >= DISTANCE_THRESHOLD) {
-                        console.log("Significant position change:", { latitude, longitude })
+                setPosition({ latitude, longitude })
+                lastPositionRef.current = { latitude, longitude }
+            } else {
+                console.log("Insignificant change, nothing happen")
+            }
+        } else {
+            console.log("Initial position:", { latitude, longitude })
 
-                        // let res = await createNewLocation(locationObject)
-                        // if (!res.success) alert("Something went wrong while updating location")
+            // let res = await createNewLocation(locationObject)
+            // if (!res.success) alert("Something went wrong while updating location")
 
-                        setPosition({ latitude, longitude })
-                        lastPositionRef.current = { latitude, longitude }
-                    } else {
-                        console.log("Insignificant change, nothing happen")
-                    }
-                } else {
-                    console.log("Initial position:", { latitude, longitude })
+            setPosition({ latitude, longitude })
+            lastPositionRef.current = { latitude, longitude }
+        }
+    }
 
-                    // let res = await createNewLocation(locationObject)
-                    // if (!res.success) alert("Something went wrong while updating location")
-
-                    setPosition({ latitude, longitude })
-                    lastPositionRef.current = { latitude, longitude }
-                }
-            },
-            (error) => {
-                console.error("Error:", error.message)
-            },
-            {
+    const handleGetLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updateMap, geolocationInaccessible, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
-                timeout: 10000,
-            }
-        )
-
-        return () => {
-            navigator.geolocation.clearWatch(watcherId)
+                timeout: 10000, // 10-second timeout
+            });
+        } else {
+            alert('Your current browser does not support the Geolocation feature.');
         }
-    }, [])
+    };
 
     return (
         <div>
+            <button onClick={handleGetLocation}>Get Current Location</button>
+
             {position && (
                 <div>
                     <p>Latitude: {position.latitude}</p>
