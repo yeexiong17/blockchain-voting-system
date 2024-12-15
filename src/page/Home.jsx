@@ -78,18 +78,8 @@ const Home = () => {
         }
     }, [])
 
-    const geolocationInaccessible = () => {
-        alert("Can't get location")
-    }
-
-    const updateMap = () => {
-        alert("Get location successfully")
-    }
-
     return (
         <div>
-            <button onClick={handleGetLocation}>Get Current Location</button>
-
             {position && (
                 <div>
                     <p>Latitude: {position.latitude}</p>
