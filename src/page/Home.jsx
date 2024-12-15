@@ -23,59 +23,74 @@ const Home = () => {
             return R * c
         }
 
-        const watcherId = navigator.geolocation.watchPosition(
-            async (pos) => {
-                const { latitude, longitude } = pos.coords;
-
-                let locationObject = {
-                    booking_id: 1,
-                    latitude,
-                    longitude
-                }
-
-                if (lastPositionRef.current) {
-                    // Calculate distance from the last position
-                    const distance = calculateDistance(
-                        lastPositionRef.current.latitude,
-                        lastPositionRef.current.longitude,
-                        latitude,
-                        longitude
-                    )
-
-                    if (distance >= DISTANCE_THRESHOLD) {
-                        console.log("Significant position change:", { latitude, longitude })
-
-                        // let res = await createNewLocation(locationObject)
-                        // if (!res.success) alert("Something went wrong while updating location")
-
-                        setPosition({ latitude, longitude })
-                        lastPositionRef.current = { latitude, longitude }
-                    } else {
-                        console.log("Insignificant change, nothing happen")
-                    }
-                } else {
-                    console.log("Initial position:", { latitude, longitude })
-
-                    // let res = await createNewLocation(locationObject)
-                    // if (!res.success) alert("Something went wrong while updating location")
-
-                    setPosition({ latitude, longitude })
-                    lastPositionRef.current = { latitude, longitude }
-                }
-            },
-            (error) => {
-                console.error("Error:", error.message)
-            },
-            {
-                enableHighAccuracy: true,
-                maximumAge: 0,
-                timeout: Infinity,
-            }
-        )
-
-        return () => {
-            navigator.geolocation.clearWatch(watcherId)
+        const geolocationInaccessible = () => {
+            alert("Can't get location")
         }
+
+        const updateMap = () => {
+            alert("Get location successfully")
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updateMap, geolocationInaccessible);
+        }
+        else {
+            alert("Your current browser does not support the Geolocation feature.");
+        }
+
+        // const watcherId = navigator.geolocation.watchPosition(
+        //     async (pos) => {
+        //         const { latitude, longitude } = pos.coords;
+
+        //         let locationObject = {
+        //             booking_id: 1,
+        //             latitude,
+        //             longitude
+        //         }
+
+        //         if (lastPositionRef.current) {
+        //             // Calculate distance from the last position
+        //             const distance = calculateDistance(
+        //                 lastPositionRef.current.latitude,
+        //                 lastPositionRef.current.longitude,
+        //                 latitude,
+        //                 longitude
+        //             )
+
+        //             if (distance >= DISTANCE_THRESHOLD) {
+        //                 console.log("Significant position change:", { latitude, longitude })
+
+        //                 // let res = await createNewLocation(locationObject)
+        //                 // if (!res.success) alert("Something went wrong while updating location")
+
+        //                 setPosition({ latitude, longitude })
+        //                 lastPositionRef.current = { latitude, longitude }
+        //             } else {
+        //                 console.log("Insignificant change, nothing happen")
+        //             }
+        //         } else {
+        //             console.log("Initial position:", { latitude, longitude })
+
+        //             // let res = await createNewLocation(locationObject)
+        //             // if (!res.success) alert("Something went wrong while updating location")
+
+        //             setPosition({ latitude, longitude })
+        //             lastPositionRef.current = { latitude, longitude }
+        //         }
+        //     },
+        //     (error) => {
+        //         console.error("Error:", error.message)
+        //     },
+        //     {
+        //         enableHighAccuracy: true,
+        //         maximumAge: 0,
+        //         timeout: 0,
+        //     }
+        // )
+
+        // return () => {
+        //     navigator.geolocation.clearWatch(watcherId)
+        // }
     }, [])
 
     return (
