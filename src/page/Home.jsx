@@ -9,35 +9,6 @@ const Home = () => {
     const watchIdRef = useRef(null)
     const DISTANCE_THRESHOLD = 10
 
-    useEffect(() => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(
-                // () => {
-                //     watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
-                //         enableHighAccuracy: true,
-                //         maximumAge: 0,
-                //         timeout: 10000
-                //     })
-                // },
-                updateMap,
-                geolocationInaccessible,
-                {
-                    enableHighAccuracy: true,
-                    maximumAge: 0,
-                    timeout: 10000
-                }
-            )
-        } else {
-            alert('Your current browser does not support the Geolocation feature.')
-        }
-
-        // return () => {
-        //     if (watchIdRef.current !== null) {
-        //         navigator.geolocation.clearWatch(watchIdRef.current)
-        //     }
-        // }
-    }, [])
-
     const calculateDistance = (lat1, lon1, lat2, lon2) => {
         const R = 6371e3
         const toRad = (deg) => (deg * Math.PI) / 180
@@ -98,8 +69,22 @@ const Home = () => {
         }
     }
 
+    const handleGetLocation = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updateMap, geolocationInaccessible, {
+                enableHighAccuracy: true,
+                maximumAge: 0,
+                timeout: 10000
+            })
+        } else {
+            alert('Your current browser does not support the Geolocation feature.')
+        }
+    }
+
     return (
         <div>
+            <button onClick={handleGetLocation}>Get Current Location</button>
+
             {position && (
                 <div>
                     <p>Latitude: {position.latitude}</p>
