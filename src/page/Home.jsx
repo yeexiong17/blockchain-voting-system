@@ -22,48 +22,50 @@ const Home = () => {
         return R * c
     }
 
-    const geolocationInaccessible = (error) => {
-        alert("Error: ", error.message)
+    const geolocationInaccessible = () => {
+        alert("Can't get location")
     }
 
     const updateMap = async (pos) => {
-        const { latitude, longitude } = pos.coords;
+        alert("Get location successfully")
 
-        let locationObject = {
-            booking_id: 1,
-            latitude,
-            longitude
-        }
+        // const { latitude, longitude } = pos.coords;
 
-        if (lastPositionRef.current) {
-            // Calculate distance from the last position
-            const distance = calculateDistance(
-                lastPositionRef.current.latitude,
-                lastPositionRef.current.longitude,
-                latitude,
-                longitude
-            )
+        // let locationObject = {
+        //     booking_id: 1,
+        //     latitude,
+        //     longitude
+        // }
 
-            if (distance >= DISTANCE_THRESHOLD) {
-                console.log("Significant position change:", { latitude, longitude })
+        // if (lastPositionRef.current) {
+        //     // Calculate distance from the last position
+        //     const distance = calculateDistance(
+        //         lastPositionRef.current.latitude,
+        //         lastPositionRef.current.longitude,
+        //         latitude,
+        //         longitude
+        //     )
 
-                // let res = await createNewLocation(locationObject)
-                // if (!res.success) alert("Something went wrong while updating location")
+        //     if (distance >= DISTANCE_THRESHOLD) {
+        //         console.log("Significant position change:", { latitude, longitude })
 
-                setPosition({ latitude, longitude })
-                lastPositionRef.current = { latitude, longitude }
-            } else {
-                console.log("Insignificant change, nothing happen")
-            }
-        } else {
-            console.log("Initial position:", { latitude, longitude })
+        //         // let res = await createNewLocation(locationObject)
+        //         // if (!res.success) alert("Something went wrong while updating location")
 
-            // let res = await createNewLocation(locationObject)
-            // if (!res.success) alert("Something went wrong while updating location")
+        //         setPosition({ latitude, longitude })
+        //         lastPositionRef.current = { latitude, longitude }
+        //     } else {
+        //         console.log("Insignificant change, nothing happen")
+        //     }
+        // } else {
+        //     console.log("Initial position:", { latitude, longitude })
 
-            setPosition({ latitude, longitude })
-            lastPositionRef.current = { latitude, longitude }
-        }
+        //     // let res = await createNewLocation(locationObject)
+        //     // if (!res.success) alert("Something went wrong while updating location")
+
+        //     setPosition({ latitude, longitude })
+        //     lastPositionRef.current = { latitude, longitude }
+        // }
     }
 
     const handleGetLocation = () => {
@@ -71,12 +73,12 @@ const Home = () => {
             navigator.geolocation.getCurrentPosition(updateMap, geolocationInaccessible, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
-                timeout: 10000, // 10-second timeout
-            });
+                timeout: 10000
+            })
         } else {
-            alert('Your current browser does not support the Geolocation feature.');
+            alert('Your current browser does not support the Geolocation feature.')
         }
-    };
+    }
 
     return (
         <div>
