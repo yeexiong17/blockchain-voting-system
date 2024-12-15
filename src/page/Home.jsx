@@ -68,6 +68,9 @@ const Home = () => {
             lastPositionRef.current = { latitude, longitude }
         }
     }
+    useEffect(() => {
+        handleGetLocation()
+    }, [])
 
     const handleGetLocation = () => {
         if (navigator.geolocation) {
@@ -83,8 +86,6 @@ const Home = () => {
 
     return (
         <div>
-            <button onClick={handleGetLocation}>Get Current Location</button>
-
             {position && (
                 <div>
                     <p>Latitude: {position.latitude}</p>
