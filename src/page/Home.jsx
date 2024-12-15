@@ -1,6 +1,5 @@
-import { useEffect, useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { createNewLocation } from '../supabase'
-
 
 const Home = () => {
 
@@ -39,7 +38,6 @@ const Home = () => {
         }
 
         if (lastPositionRef.current) {
-            // Calculate distance from the last position
             const distance = calculateDistance(
                 lastPositionRef.current.latitude,
                 lastPositionRef.current.longitude,
@@ -50,9 +48,6 @@ const Home = () => {
             if (distance >= DISTANCE_THRESHOLD) {
                 console.log("Significant position change:", { latitude, longitude })
 
-                // let res = await createNewLocation(locationObject)
-                // if (!res.success) alert("Something went wrong while updating location")
-
                 setPosition({ latitude, longitude })
                 lastPositionRef.current = { latitude, longitude }
             } else {
@@ -61,20 +56,14 @@ const Home = () => {
         } else {
             console.log("Initial position:", { latitude, longitude })
 
-            // let res = await createNewLocation(locationObject)
-            // if (!res.success) alert("Something went wrong while updating location")
-
             setPosition({ latitude, longitude })
             lastPositionRef.current = { latitude, longitude }
         }
     }
-    useEffect(() => {
-        handleGetLocation()
-    }, [])
 
-    const handleGetLocation = () => {
+    const startLocationWatch = () => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(updateMap, geolocationInaccessible, {
+            watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
                 timeout: 10000
@@ -84,8 +73,18 @@ const Home = () => {
         }
     }
 
+    useEffect(() => {
+        return () => {
+            if (watchIdRef.current !== null) {
+                navigator.geolocation.clearWatch(watchIdRef.current)
+            }
+        }
+    }, [])
+
     return (
         <div>
+            <button onClick={startLocationWatch}>Start Watching Location</button>
+
             {position && (
                 <div>
                     <p>Latitude: {position.latitude}</p>
