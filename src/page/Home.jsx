@@ -22,68 +22,48 @@ const Home = () => {
         return R * c
     }
 
-    // const geolocationInaccessible = () => {
-    //     alert("Can't get location")
-    // }
+    const geolocationInaccessible = () => {
+        alert("Can't get location")
+    }
 
-    // const updateMap = async (pos) => {
-    //     alert("Get location successfully")
+    const updateMap = async (pos) => {
+        alert("Get location successfully")
 
-    //     const { latitude, longitude } = pos.coords;
+        const { latitude, longitude } = pos.coords;
 
-    //     let locationObject = {
-    //         booking_id: 1,
-    //         latitude,
-    //         longitude
-    //     }
+        let locationObject = {
+            booking_id: 1,
+            latitude,
+            longitude
+        }
 
-    //     if (lastPositionRef.current) {
-    //         const distance = calculateDistance(
-    //             lastPositionRef.current.latitude,
-    //             lastPositionRef.current.longitude,
-    //             latitude,
-    //             longitude
-    //         )
+        if (lastPositionRef.current) {
+            const distance = calculateDistance(
+                lastPositionRef.current.latitude,
+                lastPositionRef.current.longitude,
+                latitude,
+                longitude
+            )
 
-    //         if (distance >= DISTANCE_THRESHOLD) {
-    //             console.log("Significant position change:", { latitude, longitude })
+            if (distance >= DISTANCE_THRESHOLD) {
+                console.log("Significant position change:", { latitude, longitude })
 
-    //             setPosition({ latitude, longitude })
-    //             lastPositionRef.current = { latitude, longitude }
-    //         } else {
-    //             console.log("Insignificant change, nothing happen")
-    //         }
-    //     } else {
-    //         console.log("Initial position:", { latitude, longitude })
+                setPosition({ latitude, longitude })
+                lastPositionRef.current = { latitude, longitude }
+            } else {
+                console.log("Insignificant change, nothing happen")
+            }
+        } else {
+            console.log("Initial position:", { latitude, longitude })
 
-    //         setPosition({ latitude, longitude })
-    //         lastPositionRef.current = { latitude, longitude }
-    //     }
-    // }
+            setPosition({ latitude, longitude })
+            lastPositionRef.current = { latitude, longitude }
+        }
+    }
 
-    // const startLocationWatch = () => {
-    //     if (navigator.geolocation) {
-    //         watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
-    //             enableHighAccuracy: true,
-    //             maximumAge: 0,
-    //             timeout: 10000
-    //         })
-    //     } else {
-    //         alert('Your current browser does not support the Geolocation feature.')
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     startLocationWatch()
-    //     return () => {
-    //         if (watchIdRef.current !== null) {
-    //             navigator.geolocation.clearWatch(watchIdRef.current)
-    //         }
-    //     }
-    // }, [])
     const startLocationWatch = () => {
         if (navigator.geolocation) {
-            watchIdRef.current = navigator.geolocation.getCurrentPosition(updateMap, geolocationInaccessible, {
+            watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
                 enableHighAccuracy: true,
                 maximumAge: 0,
                 timeout: 10000
@@ -93,14 +73,15 @@ const Home = () => {
         }
     }
 
-    const geolocationInaccessible = () => {
-        alert("Can't get location")
-    }
+    useEffect(() => {
+        startLocationWatch()
 
-    const updateMap = () => {
-        alert("Location Retrieve Successfully")
-    }
-
+        return () => {
+            if (watchIdRef.current !== null) {
+                navigator.geolocation.clearWatch(watchIdRef.current)
+            }
+        }
+    }, [])
 
     return (
         <div>
