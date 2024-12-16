@@ -22,10 +22,6 @@ const Home = () => {
         return R * c
     }
 
-    const geolocationInaccessible = () => {
-        alert("Can't get location")
-    }
-
     const updateMap = async (pos) => {
         alert("Get location successfully")
 
@@ -61,6 +57,10 @@ const Home = () => {
         }
     }
 
+    const geolocationInaccessible = () => {
+        alert("Can't get location")
+    }
+
     const startLocationWatch = () => {
         if (navigator.geolocation) {
             watchIdRef.current = navigator.geolocation.watchPosition(updateMap, geolocationInaccessible, {
@@ -74,8 +74,6 @@ const Home = () => {
     }
 
     useEffect(() => {
-        startLocationWatch()
-
         return () => {
             if (watchIdRef.current !== null) {
                 navigator.geolocation.clearWatch(watchIdRef.current)
