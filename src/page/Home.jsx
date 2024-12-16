@@ -74,6 +74,7 @@ const Home = () => {
     }
 
     useEffect(() => {
+        startLocationWatch()
         return () => {
             if (watchIdRef.current !== null) {
                 navigator.geolocation.clearWatch(watchIdRef.current)
