@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js'
-import { supabaseUrl, supabaseAnonKey } from './constants'
 
 const options = {
     auth: {
@@ -9,7 +8,7 @@ const options = {
     }
 }
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey, options)
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY, options)
 
 export const createNewLocation = async (locationData) => {
 
