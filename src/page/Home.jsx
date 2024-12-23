@@ -44,6 +44,9 @@ const Home = () => {
             if (distance >= DISTANCE_THRESHOLD) {
                 console.log("Significant position change:", { latitude, longitude })
 
+                // let res = await createNewLocation(locationObject)
+                // if (!res.success) alert("Something went wrong while updating location")
+
                 setPosition({ latitude, longitude })
                 lastPositionRef.current = { latitude, longitude }
             } else {
@@ -51,6 +54,9 @@ const Home = () => {
             }
         } else {
             console.log("Initial position:", { latitude, longitude })
+
+            // let res = await createNewLocation(locationObject)
+            // if (!res.success) alert("Something went wrong while updating location")
 
             setPosition({ latitude, longitude })
             lastPositionRef.current = { latitude, longitude }
