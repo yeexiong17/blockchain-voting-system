@@ -8,15 +8,21 @@ const options = {
     }
 }
 
-const supabase = createClient(process.env.REACT_APP_SUPABASE_URL, process.env.REACT_APP_SUPABASE_ANON_KEY, options)
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL;
+const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY;
 
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, options)
+
+// User Table
+
+// Location Table
 export const createNewLocation = async (locationData) => {
 
     const { booking_id, latitude, longitude } = locationData
 
     try {
         const { data, error } = await supabase
-            .from('locations')
+            .from('location')
             .insert({ booking_id, latitude, longitude })
             .select()
 
@@ -38,7 +44,7 @@ export const createNewLocation = async (locationData) => {
 export const getLocation = async () => {
     try {
         const { data, error } = await supabase
-            .from('locations')
+            .from('location')
             .select()
             .eq('booking_id', 1)
 

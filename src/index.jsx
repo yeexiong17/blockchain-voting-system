@@ -1,19 +1,24 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import './index.css'
-import App from './App'
-import 'leaflet/dist/leaflet.css'
 import { BrowserRouter } from "react-router-dom"
-import { AuthProvider } from './Context'
 
+import 'leaflet/dist/leaflet.css'
+import '@mantine/core/styles.css';
+import './styles/index.css'
+
+import App from './App'
+import { AuthProvider } from './Context'
+import { MantineProvider } from '@mantine/core'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
-  <AuthProvider>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
-  </AuthProvider>
+  <MantineProvider >
+    <AuthProvider>
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AuthProvider>
+  </MantineProvider>
 )
 
 if ('serviceWorker' in navigator) {

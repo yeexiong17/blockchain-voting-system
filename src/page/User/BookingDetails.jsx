@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
-import Map from '../components/Map/Map'
-import { getLocation } from '../supabase'
+import Map from '../../components/Map'
+import { getLocation } from '../../supabase'
 
 const BookingDetails = () => {
 
