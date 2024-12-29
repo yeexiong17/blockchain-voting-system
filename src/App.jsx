@@ -7,7 +7,6 @@ import { useAuth } from './Context'
 import ProtectedRoute from './components/ProtectedRoute'
 import Public from './page/Public'
 import Home from './page/Home'
-import BookingDetails from './page/User/BookingDetails'
 import SignUp from './page/User/SignUp'
 
 function App() {
