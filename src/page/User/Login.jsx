@@ -16,7 +16,8 @@ const Login = () => {
                 title: 'Login Error',
                 message: 'All fields are required',
                 className: 'w-5/6 ml-auto',
-                position: 'top-right'
+                position: 'top-right',
+                color: 'red'
             })
             return
         }
@@ -34,7 +35,8 @@ const Login = () => {
                 title: 'Login Error',
                 message: error.message,
                 className: 'w-5/6 ml-auto',
-                position: 'top-right'
+                position: 'top-right',
+                color: 'red'
             })
         }
     }

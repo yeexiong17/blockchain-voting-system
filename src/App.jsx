@@ -9,7 +9,7 @@ import Public from './page/Public'
 import Home from './page/Home'
 import Registration from './page/User/Registration'
 import Login from './page/User/Login'
-import RegisterVote from './page/User/RegisterVote'
+import VoterRegistration from './page/User/VoterRegistration'
 import Vote from './page/User/Vote'
 
 function App() {
@@ -56,10 +56,10 @@ function App() {
             }
           />
           <Route
-            path="/register-vote"
+            path="/voter-registration"
             element={
               <ProtectedRoute>
-                <RegisterVote />
+                <VoterRegistration />
               </ProtectedRoute>
             }
           />

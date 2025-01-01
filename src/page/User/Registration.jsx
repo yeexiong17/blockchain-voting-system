@@ -18,7 +18,8 @@ const Registration = () => {
                 title: 'Registration Error',
                 message: 'All fields are required',
                 className: 'w-5/6 ml-auto',
-                position: 'top-right'
+                position: 'top-right',
+                color: 'red'
             })
             return
         }
@@ -42,7 +43,8 @@ const Registration = () => {
                 title: 'Registration Error',
                 message: error.message,
                 className: 'w-5/6 ml-auto',
-                position: 'top-right'
+                position: 'top-right',
+                color: 'red'
             })
         }
     }

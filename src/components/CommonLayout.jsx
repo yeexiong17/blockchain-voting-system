@@ -6,7 +6,6 @@ const CommonLayout = ({ children }) => {
 
     return (
         <div className='flex'>
-
             <Navbar />
             <Container className='flex-1'>
                 {children}

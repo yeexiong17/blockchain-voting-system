@@ -13,7 +13,7 @@ import { useAuth } from '../Context'
 
 const data = [
     { link: '/home', label: 'Home', icon: IconHome },
-    { link: '/register-vote', label: 'Register Vote', icon: IconEdit },
+    { link: '/voter-registration', label: 'Register Vote', icon: IconEdit },
     { link: '/vote', label: 'Vote', icon: IconFingerprint },
 ]
 
