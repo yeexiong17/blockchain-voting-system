@@ -2,15 +2,16 @@ import { useRef } from "react"
 import { supabase } from "../../supabase"
 import { Button, Container, PasswordInput, Space, TextInput } from "@mantine/core"
 
-const SignUp = () => {
+const Registration = () => {
 
     const emailRef = useRef('')
     const nameRef = useRef('')
     const passwordRef = useRef('')
+    const confirmPasswordRef = useRef('')
 
     const handleSignUp = async () => {
 
-        if (!emailRef.current || !passwordRef.current || !nameRef.current) {
+        if (!emailRef.current || !passwordRef.current || !confirmPasswordRef.current || !nameRef.current) {
             alert('Please fill in all the fields!')
             return
         }
@@ -24,7 +25,8 @@ const SignUp = () => {
             password,
             options: {
                 data: {
-                    name
+                    name,
+                    email
                 }
             }
         })
@@ -40,7 +42,7 @@ const SignUp = () => {
             <div className="">
                 <TextInput
                     label="Name"
-                    description="Input description"
+                    description="Example: John Doe"
                     placeholder="Enter your name"
                     onChange={(event) => nameRef.current = event.currentTarget.value}
                 />
@@ -48,7 +50,7 @@ const SignUp = () => {
                 <Space h="md" />
                 <TextInput
                     label="Email"
-                    description="Input description"
+                    description="Example: user1@gmail.com"
                     placeholder="Enter your email"
                     onChange={(event) => emailRef.current = event.currentTarget.value}
                 />
@@ -56,9 +58,17 @@ const SignUp = () => {
                 <Space h="md" />
                 <PasswordInput
                     label="Password"
-                    description="Input description"
+                    description="Password must be at least 8 characters long | Example: Abc@1234"
                     placeholder="Create your password"
                     onChange={(event) => passwordRef.current = event.currentTarget.value}
+                />
+
+                <Space h="md" />
+                <PasswordInput
+                    label="Confirm Password"
+                    description="Both password and confirmation password must be the same"
+                    placeholder="Confirm your password"
+                    onChange={(event) => confirmPasswordRef.current = event.currentTarget.value}
                 />
 
                 <Space h="md" />
@@ -71,4 +81,4 @@ const SignUp = () => {
     )
 }
 
-export default SignUp
+export default Registration

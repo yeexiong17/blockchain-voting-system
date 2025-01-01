@@ -7,7 +7,7 @@ import { useAuth } from './Context'
 import ProtectedRoute from './components/ProtectedRoute'
 import Public from './page/Public'
 import Home from './page/Home'
-import SignUp from './page/User/SignUp'
+import Registration from './page/User/Registration'
 
 function App() {
   const { auth, setAuth, setUserData } = useAuth()
@@ -32,7 +32,7 @@ function App() {
         <>
           <Route path="/*" element={<Navigate to="/" />} />
           <Route path="/" element={<Public />} />
-          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/register" element={<Registration />} />
         </>
       ) : (
         <>
@@ -48,14 +48,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/booking-details"
-            element={
-              <ProtectedRoute>
-                <BookingDetails />
               </ProtectedRoute>
             }
           />
