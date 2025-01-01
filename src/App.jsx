@@ -8,6 +8,9 @@ import ProtectedRoute from './components/ProtectedRoute'
 import Public from './page/Public'
 import Home from './page/Home'
 import Registration from './page/User/Registration'
+import Login from './page/User/Login'
+import RegisterVote from './page/User/RegisterVote'
+import Vote from './page/User/Vote'
 
 function App() {
   const { auth, setAuth, setUserData } = useAuth()
@@ -33,6 +36,7 @@ function App() {
           <Route path="/*" element={<Navigate to="/" />} />
           <Route path="/" element={<Public />} />
           <Route path="/register" element={<Registration />} />
+          <Route path="/login" element={<Login />} />
         </>
       ) : (
         <>
@@ -51,9 +55,24 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/register-vote"
+            element={
+              <ProtectedRoute>
+                <RegisterVote />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vote"
+            element={
+              <ProtectedRoute>
+                <Vote />
+              </ProtectedRoute>
+            }
+          />
         </>
       )}
-
     </Routes>
   )
 }
