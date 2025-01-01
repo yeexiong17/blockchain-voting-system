@@ -1,5 +1,4 @@
 import CommonLayout from '../components/CommonLayout'
-import { Navbar } from '../components/Navbar'
 
 const Home = () => {
 
