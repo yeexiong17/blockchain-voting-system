@@ -11,7 +11,7 @@ const VoteRegistrationStepper = () => {
     const handleStepChange = (step) => {
         setHighestStepVisited(false)
 
-        if ((!walletAddress && step == 1) || (!identificationNumber && step == 2)) {
+        if ((!walletAddress && step === 1) || (!identificationNumber && step === 2)) {
             notifications.show({
                 title: 'Step Error',
                 message: 'Please complete current step before proceeding',
@@ -22,7 +22,7 @@ const VoteRegistrationStepper = () => {
             return
         }
 
-        if (step == 3) {
+        if (step === 3) {
             setHighestStepVisited(true)
             return
         }
@@ -31,7 +31,7 @@ const VoteRegistrationStepper = () => {
     }
 
     const handleStepBack = (step) => {
-        if (step == 0) {
+        if (step === 0) {
             return
         }
 
@@ -89,7 +89,25 @@ const VoteRegistrationStepper = () => {
 
     return (
         <>
-            <Stepper active={active} onStepClick={setActive}>
+            <Stepper size='sm' active={active} onStepClick={setActive}
+                styles={() => ({
+                    step: {
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                    },
+                    stepBody: {
+                        margin: '8px 0 0',
+                    },
+                    stepLabel: {
+                        textAlign: 'center',
+                    },
+                    stepDescription: {
+                        textAlign: 'center',
+                    },
+                })}
+            >
                 <Stepper.Step
                     label="First Step"
                     description="Connect Wallet"
@@ -130,7 +148,7 @@ const VoteRegistrationStepper = () => {
                         <p>Identification Number: <span className='font-bold'>{identificationNumber}</span></p>
                     </Stack>
                 </Stepper.Completed>
-            </Stepper>
+            </Stepper >
 
             <Group justify="right" className='mt-20'>
                 {
@@ -139,7 +157,7 @@ const VoteRegistrationStepper = () => {
                         Back
                     </Button>
                 }
-                <Button className='w-full' onClick={() => handleStepChange(active + 1)}>{active == 2 ? 'Complete Register' : 'Next step'}</Button>
+                <Button className='w-full' onClick={() => handleStepChange(active + 1)}>{active === 2 ? 'Complete Register' : 'Next step'}</Button>
             </Group>
         </>
     )
