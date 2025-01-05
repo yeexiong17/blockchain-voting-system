@@ -1,19 +1,19 @@
 {
-  "short_name": "TBS",
-  "name": "Tow Booking System",
+  "short_name": "BlockVote",
+  "name": "BlockVote",
   "icons": [
     {
-      "src": "./images/tow-car-icon-144.png",
+      "src": "./images/voting-box-144",
       "sizes": "144x144",
       "type": "image/png"
     },
     {
-      "src": "./images/tow-car-icon-192.png",
+      "src": "./images/voting-box-192",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "./images/tow-car-icon-512.png",
+      "src": "./images/voting-box-512",
       "sizes": "512x512",
       "type": "image/png"
     }

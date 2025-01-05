@@ -7,7 +7,7 @@ import {
     IconHome,
     IconLogout,
 } from '@tabler/icons-react'
-import { Burger, Button, Drawer, Group } from '@mantine/core'
+import { Burger, Button, Drawer, Flex, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 
 import classes from '../styles/mantine.module.css'
@@ -15,7 +15,7 @@ import { useAuth } from '../Context'
 
 const data = [
     { link: '/home', label: 'Home', icon: IconHome },
-    { link: '/voter-registration', label: 'Register Vote', icon: IconEdit },
+    { link: '/voter-registration', label: 'Voter Registration', icon: IconEdit },
     { link: '/vote', label: 'Vote', icon: IconFingerprint },
 ]
 
@@ -39,7 +39,6 @@ export function Navbar() {
         }
     }, [])
 
-
     const links = data.map((item) => (
         <Link
             to={item.link}
@@ -50,7 +49,14 @@ export function Navbar() {
             <item.icon className={classes.linkIcon} stroke={1.5} />
             <span>{item.label}</span>
         </Link>
-    ));
+    ))
+
+    const transformUrl = (urlString) => {
+        let removeSlash = urlString.slice(1)
+        let urlWithSpace = removeSlash.replace(/-/g, " ")
+
+        return urlWithSpace.split(" ").map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(" ")
+    }
 
     return (
 
@@ -68,9 +74,12 @@ export function Navbar() {
                             </a>
                         </div>
                     </Drawer>
-                    <div>
+                    <Flex align='center'>
                         <Burger opened={opened} onClick={() => { open(); toggle(); }} aria-label="Toggle navigation" />
-                    </div>
+                        <div className='p-4'>
+                            <h1 className='text-2xl font-bold'>{transformUrl(location.pathname)}</h1>
+                        </div>
+                    </Flex>
                 </>
             ) : (
                 <nav className={`${classes.navbar} h-full`}>
