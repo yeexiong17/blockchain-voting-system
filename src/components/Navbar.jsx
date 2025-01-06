@@ -4,36 +4,59 @@ import { useLocation, Link } from 'react-router-dom'
 import {
     IconFingerprint,
     IconEdit,
-    IconHome,
     IconLogout,
+    IconUserCog,
+    IconCheckbox,
+    IconUserCheck,
+    IconLayoutDashboard,
 } from '@tabler/icons-react'
-import { Burger, Button, Drawer, Flex, Group } from '@mantine/core'
+import { Burger, Drawer, Flex, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
 
 import classes from '../styles/mantine.module.css'
 import { useAuth } from '../Context'
 
-const data = [
-    { link: '/home', label: 'Home', icon: IconHome },
-    { link: '/voter-registration', label: 'Voter Registration', icon: IconEdit },
-    { link: '/vote', label: 'Vote', icon: IconFingerprint },
-]
-
 export function Navbar() {
-    const { signOut } = useAuth()
     const location = useLocation()
-    const [opened, { open, close }] = useDisclosure(false)
-    const [burgerOpened, { toggle }] = useDisclosure();
-
     const [width, setWidth] = useState(window.innerWidth)
+    const [opened, { open, close }] = useDisclosure(false)
+    const [burgerOpened, { toggle }] = useDisclosure()
+    const [data, setData] = useState([])
+
+    const { signOut, auth } = useAuth()
 
     const isMobile = width <= 768;
 
-    function handleWindowSizeChange() {
+
+    const handleWindowSizeChange = () => {
         setWidth(window.innerWidth)
     }
+
     useEffect(() => {
         window.addEventListener('resize', handleWindowSizeChange)
+
+        if (auth.user_metadata.role === 'superadmin') {
+            setData([
+                { link: '/admin-dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
+                { link: '/manage-admin', label: 'Manage Admin', icon: IconUserCog },
+                { link: '/manage-vote', label: 'Manage Vote', icon: IconCheckbox },
+                { link: '/manage-voter', label: 'Manage Voter', icon: IconUserCheck },
+            ])
+        }
+        else if (auth.user_metadata.role === 'admin') {
+            setData([
+                { link: '/admin-dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
+                { link: '/manage-voter', label: 'Manage Voter', icon: IconUserCheck },
+                { link: '/manage-vote', label: 'Manage Vote', icon: IconCheckbox },
+            ])
+        }
+        else {
+            setData([
+                { link: '/voter-registration', label: 'Vote Registration', icon: IconEdit },
+                { link: '/vote', label: 'Vote', icon: IconFingerprint }
+            ])
+        }
+
         return () => {
             window.removeEventListener('resize', handleWindowSizeChange)
         }
