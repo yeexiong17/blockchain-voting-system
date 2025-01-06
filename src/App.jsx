@@ -14,6 +14,7 @@ import ManageAdmin from './page/SuperAdmin/ManageAdmin'
 import ManageVote from './page/Admin/ManageVote'
 import ManageVoter from './page/Admin/ManageVoter'
 import AdminDashboard from './page/Admin/AdminDashboard'
+import Result from './page/User/Result'
 
 function App() {
   const [loading, setLoading] = useState(true)
@@ -123,6 +124,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Vote />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/result"
+                  element={
+                    <ProtectedRoute>
+                      <Result />
                     </ProtectedRoute>
                   }
                 />

@@ -9,6 +9,7 @@ import {
     IconCheckbox,
     IconUserCheck,
     IconLayoutDashboard,
+    IconReportAnalytics,
 } from '@tabler/icons-react'
 import { Burger, Drawer, Flex, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
@@ -53,7 +54,8 @@ export function Navbar() {
         else {
             setData([
                 { link: '/voter-registration', label: 'Vote Registration', icon: IconEdit },
-                { link: '/vote', label: 'Vote', icon: IconFingerprint }
+                { link: '/vote', label: 'Vote', icon: IconFingerprint },
+                { link: '/result', label: 'Result', icon: IconReportAnalytics }
             ])
         }
 

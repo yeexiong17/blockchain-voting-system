@@ -15,7 +15,7 @@ const CommonLayout = ({ children }) => {
                     : ''
             }
             <Container
-                className='w-full md:pt-5'>
+                className='grow w-full md:pt-5 md:pb-10'>
                 {children}
             </Container>
         </Container >

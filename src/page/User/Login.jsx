@@ -9,7 +9,7 @@ const Login = () => {
     const emailRef = useRef('')
     const passwordRef = useRef('')
 
-    const handleSignUp = async () => {
+    const handleLogIn = async () => {
 
         if (!emailRef.current || !passwordRef.current) {
             notifications.show({
@@ -43,6 +43,11 @@ const Login = () => {
 
     return (
         <Container size="sm" className="mt-5">
+            <div>
+                <p className='font-bold text-3xl'>Log In</p>
+            </div>
+
+            <Space h="md" />
             <TextInput
                 label="Email"
                 placeholder="Enter your email"
@@ -57,7 +62,7 @@ const Login = () => {
             />
 
             <Space h="md" />
-            <Button onClick={handleSignUp} variant="filled" fullWidth radius="md">Log In</Button>
+            <Button onClick={handleLogIn} variant="filled" fullWidth radius="md">Log In</Button>
         </Container>
     )
 }
