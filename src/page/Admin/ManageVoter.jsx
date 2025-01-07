@@ -1,25 +1,33 @@
 import { useEffect, useState } from "react"
 
-import { IconDots, IconPencil, IconTrash } from "@tabler/icons-react"
-import { ActionIcon, Checkbox, Group, Menu, ScrollArea, Stack, Table, Text } from "@mantine/core"
+import { IconDots, IconPencil, IconPlus, IconTrash } from "@tabler/icons-react"
+import { ActionIcon, Button, Divider, Group, Menu, Modal, ScrollArea, Space, Stack, Table, Text, TextInput } from "@mantine/core"
 
 import CommonLayout from "../../components/CommonLayout"
 import { supabase } from "../../supabase"
 import { notifications } from "@mantine/notifications"
+import { useDisclosure } from "@mantine/hooks"
+import { contract } from '../../blockchainContract'
+import { useAuth } from "../../Context"
 
 const ManageVoter = () => {
     const [selection, setSelection] = useState(['1'])
-    const [adminData, setAdminData] = useState([])
+    const [voterData, setVoterData] = useState([])
+    const [opened, { open, close }] = useDisclosure(false)
+    const [candidateName, setCandidateName] = useState('')
+    const [candidate, setCandidate] = useState([])
+    const { toggle } = useAuth()
 
     useEffect(() => {
         fetchAllAdmin()
+        getAllCandidate()
     }, [])
 
     const fetchAllAdmin = async () => {
+        toggle()
         const { data, error } = await supabase.from('users').select().eq('role', 'user')
-        console.log(data)
-        setAdminData(data)
-
+        toggle()
+        setVoterData(data)
         if (error) {
             notifications.show({
                 title: 'User Fetch Error',
@@ -40,16 +48,13 @@ const ManageVoter = () => {
     }
 
     const toggleAll = () => {
-        setSelection((current) => (current.length === adminData.length ? [] : adminData.map((item) => item.id)))
+        setSelection((current) => (current.length === voterData.length ? [] : voterData.map((item) => item.id)))
     }
 
-    const rows = adminData.map((item) => {
-        const selected = selection.includes(item.id)
+    const rows = voterData.map((item, index) => {
         return (
             <Table.Tr key={item.id}>
-                <Table.Td>
-                    <Checkbox checked={selection.includes(item.id)} onChange={() => toggleRow(item.id)} />
-                </Table.Td>
+                <Table.Td>{index + 1}</Table.Td>
                 <Table.Td>
                     <Group gap="sm">
                         <Text size="sm" fw={500}>
@@ -87,29 +92,147 @@ const ManageVoter = () => {
         )
     })
 
+    const candidateRow = candidate.map((item, index) => {
+        return (
+            <Table.Tr key={index} >
+                <Table.Td>{index + 1}</Table.Td>
+                <Table.Td>
+                    <Group gap="sm">
+                        <Text size="sm" fw={500}>
+                            {item}
+                        </Text>
+                    </Group>
+                </Table.Td>
+                <Table.Td>
+                    <Group gap={0} justify="flex-end">
+                        <ActionIcon variant="subtle" color="gray">
+                            <IconPencil size={16} stroke={1.5} />
+                        </ActionIcon>
+                        <Menu
+                            transitionProps={{ transition: 'pop' }}
+                            withArrow
+                            position="bottom-end"
+                            withinPortal
+                        >
+                            <Menu.Target>
+                                <ActionIcon variant="subtle" color="gray">
+                                    <IconDots size={16} stroke={1.5} />
+                                </ActionIcon>
+                            </Menu.Target>
+                            <Menu.Dropdown>
+                                <Menu.Item leftSection={<IconTrash size={16} stroke={1.5} />} color="red">
+                                    Terminate contract
+                                </Menu.Item>
+                            </Menu.Dropdown>
+                        </Menu>
+                    </Group>
+                </Table.Td>
+            </Table.Tr >
+        )
+    })
+
+    const getAllCandidate = async () => {
+        try {
+            const candidatesCount = await contract.methods.getCandidatesCount().call()
+
+            const candidates = []
+
+            for (let i = 0; i < candidatesCount; i++) {
+                const candidate = await contract.methods.candidates(i).call()
+                candidates.push(candidate)
+            }
+
+            setCandidate(candidates)
+        } catch (error) {
+            console.error('Error fetching candidates:', error)
+        }
+    }
+
+    const handleCreateNewCandidate = async () => {
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
+
+            const admin = await contract.methods.admin().call()
+
+            if (accounts[0].toLowerCase() !== admin.toLowerCase()) {
+                throw new Error('Only the admin can add candidates.')
+            }
+
+            toggle()
+            await contract.methods.addCandidate(candidateName).send({ from: accounts[0] })
+            toggle()
+
+            notifications.show({
+                title: 'Candidate Added Successfully',
+                message: `Candidate ${candidateName} added successfully!`,
+                className: 'w-5/6 ml-auto',
+                position: 'top-right',
+                color: 'green'
+            })
+
+            setCandidateName('')
+            close()
+            await getAllCandidate()
+        } catch (error) {
+            notifications.show({
+                title: 'Add Candidate Error',
+                message: `Failed to add new candidate: ${candidateName}`,
+                className: 'w-5/6 ml-auto',
+                position: 'top-right',
+                color: 'red'
+            })
+        }
+    }
+
     return (
         <CommonLayout>
             <Stack>
                 <p className='font-bold text-2xl'>Manage Voter</p>
-                <ScrollArea className='mt-5 h-3/4'>
-                    <Table miw={800} verticalSpacing="sm" stickyHeader>
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th w={40}>
-                                    <Checkbox
-                                        onChange={toggleAll}
-                                        checked={selection.length === adminData.length}
-                                        indeterminate={selection.length > 0 && selection.length !== adminData.length}
-                                    />
-                                </Table.Th>
-                                <Table.Th>Name</Table.Th>
-                                <Table.Th>Email</Table.Th>
-                                <Table.Th>Created At</Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>{rows}</Table.Tbody>
-                    </Table>
-                </ScrollArea>
+                <Stack>
+                    <ScrollArea className='mt-5 h-3/4'>
+                        <Table miw={200} verticalSpacing="sm" stickyHeader>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th w={40}></Table.Th>
+                                    <Table.Th>Voter Address</Table.Th>
+                                    <Table.Th>Created At</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>{rows}</Table.Tbody>
+                        </Table>
+                    </ScrollArea>
+
+                    <Stack>
+                        <ScrollArea h={300} className='mt-5'>
+                            <Table miw={800} verticalSpacing="sm" stickyHeader>
+                                <Table.Thead>
+                                    <Table.Tr>
+                                        <Table.Th w={40}></Table.Th>
+                                        <Table.Th>Candidate Name</Table.Th>
+                                        <Table.Th>Created At</Table.Th>
+                                    </Table.Tr>
+                                </Table.Thead>
+                                <Table.Tbody>{candidateRow}</Table.Tbody>
+                            </Table>
+                        </ScrollArea>
+                        <Modal opened={opened} onClose={close} title="New Admin">
+                            <TextInput
+                                required
+                                label="Name"
+                                placeholder="John Doe"
+                                value={candidateName}
+                                onChange={(event) => setCandidateName(event.currentTarget.value)}
+                                radius="md"
+                            />
+                            <Space h="md" />
+                            <Button onClick={() => handleCreateNewCandidate()}>Add Candidate</Button>
+                        </Modal>
+                        <Button className='ml-auto' onClick={open}>
+                            <IconPlus stroke={2} />
+                            New Candidate
+                        </Button>
+                    </Stack>
+                </Stack>
             </Stack>
         </CommonLayout>
     )

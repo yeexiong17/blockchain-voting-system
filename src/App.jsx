@@ -11,7 +11,7 @@ import Login from './page/User/Login'
 import VoterRegistration from './page/User/VoterRegistration'
 import Vote from './page/User/Vote'
 import ManageAdmin from './page/SuperAdmin/ManageAdmin'
-import ManageVote from './page/Admin/ManageVote'
+import ViewVote from './page/Admin/ViewVote'
 import ManageVoter from './page/Admin/ManageVoter'
 import AdminDashboard from './page/Admin/AdminDashboard'
 import Result from './page/User/Result'
@@ -77,10 +77,10 @@ function App() {
                   }
                 />
                 <Route
-                  path="/manage-vote"
+                  path="/view-vote"
                   element={
                     <ProtectedRoute>
-                      <ManageVote />
+                      <ViewVote />
                     </ProtectedRoute>
                   }
                 />

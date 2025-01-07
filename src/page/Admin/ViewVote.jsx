@@ -6,7 +6,7 @@ import CommonLayout from "../../components/CommonLayout"
 import { supabase } from "../../supabase"
 import { notifications } from "@mantine/notifications"
 
-const ManageVote = () => {
+const ViewVote = () => {
     const [selection, setSelection] = useState(['1'])
     const [adminData, setAdminData] = useState([])
 
@@ -89,7 +89,7 @@ const ManageVote = () => {
     return (
         <CommonLayout>
             <Stack>
-                <p className='font-bold text-2xl'>Manage Vote</p>
+                <p className='font-bold text-2xl'>View Vote</p>
                 <ScrollArea className='mt-5 h-3/4'>
                     <Table miw={800} verticalSpacing="sm" stickyHeader>
                         <Table.Thead>
@@ -114,4 +114,4 @@ const ManageVote = () => {
     )
 }
 
-export default ManageVote
+export default ViewVote
