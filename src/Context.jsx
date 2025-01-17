@@ -9,6 +9,9 @@ export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState(null)
     const [userData, setUserData] = useState(null)
     const [visible, setVisible] = useState(false)
+    const [walletAddress, setWalletAddress] = useState('')
+    const [identificationNumber, setIdentificationNumber] = useState('')
+    const [hasRegistered, setHasRegistered] = useState(false)
 
     const signOut = async () => {
         await supabase.auth.signOut()
@@ -19,7 +22,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ signOut, auth, setAuth, visible, toggle, userData, setUserData }}>
+        <AuthContext.Provider value={{ hasRegistered, setHasRegistered, walletAddress, setWalletAddress, identificationNumber, setIdentificationNumber, signOut, auth, setAuth, visible, toggle, userData, setUserData }}>
             {children}
         </AuthContext.Provider>
     );

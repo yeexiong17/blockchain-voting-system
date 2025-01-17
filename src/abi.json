@@ -1,14 +1,9 @@
 [
     {
-        "inputs": [],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
-    },
-    {
         "inputs": [
             {
                 "internalType": "string",
-                "name": "candidate",
+                "name": "_name",
                 "type": "string"
             }
         ],
@@ -20,15 +15,111 @@
     {
         "inputs": [
             {
-                "internalType": "address",
-                "name": "_voter",
-                "type": "address"
+                "internalType": "string",
+                "name": "_id",
+                "type": "string"
             }
         ],
         "name": "addVoter",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "endVote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "startVote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            }
+        ],
+        "name": "CandidateAdded",
+        "type": "event"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "_candidate",
+                "type": "string"
+            }
+        ],
+        "name": "vote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "voter",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "candidate",
+                "type": "string"
+            }
+        ],
+        "name": "VoteCast",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "bool",
+                "name": "status",
+                "type": "bool"
+            }
+        ],
+        "name": "VoteStatusChanged",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "voter",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "string",
+                "name": "id",
+                "type": "string"
+            }
+        ],
+        "name": "VoterAdded",
+        "type": "event"
     },
     {
         "inputs": [],
@@ -51,12 +142,12 @@
                 "type": "uint256"
             }
         ],
-        "name": "candidates",
+        "name": "candidateList",
         "outputs": [
             {
-                "internalType": "string",
+                "internalType": "bytes32",
                 "name": "",
-                "type": "string"
+                "type": "bytes32"
             }
         ],
         "stateMutability": "view",
@@ -65,29 +156,21 @@
     {
         "inputs": [
             {
-                "internalType": "address",
+                "internalType": "bytes32",
                 "name": "",
-                "type": "address"
+                "type": "bytes32"
             }
         ],
-        "name": "eligibleVoters",
+        "name": "candidates",
         "outputs": [
             {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "getCandidatesCount",
-        "outputs": [
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
             {
                 "internalType": "uint256",
-                "name": "",
+                "name": "voteCount",
                 "type": "uint256"
             }
         ],
@@ -95,10 +178,35 @@
         "type": "function"
     },
     {
+        "inputs": [],
+        "name": "getCandidateList",
+        "outputs": [
+            {
+                "components": [
+                    {
+                        "internalType": "string",
+                        "name": "name",
+                        "type": "string"
+                    },
+                    {
+                        "internalType": "uint256",
+                        "name": "voteCount",
+                        "type": "uint256"
+                    }
+                ],
+                "internalType": "struct Voting.Candidate[]",
+                "name": "",
+                "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [
             {
                 "internalType": "string",
-                "name": "candidate",
+                "name": "_candidate",
                 "type": "string"
             }
         ],
@@ -117,29 +225,82 @@
         "inputs": [
             {
                 "internalType": "string",
-                "name": "candidate",
+                "name": "",
                 "type": "string"
             }
         ],
-        "name": "vote",
-        "outputs": [],
-        "stateMutability": "nonpayable",
+        "name": "idRegistered",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [
             {
+                "internalType": "address",
+                "name": "_voter",
+                "type": "address"
+            },
+            {
                 "internalType": "string",
-                "name": "",
+                "name": "_id",
                 "type": "string"
             }
         ],
-        "name": "votes",
+        "name": "isVoterRegistered",
         "outputs": [
             {
-                "internalType": "uint256",
+                "internalType": "bool",
                 "name": "",
-                "type": "uint256"
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "voteActive",
+        "outputs": [
+            {
+                "internalType": "bool",
+                "name": "",
+                "type": "bool"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "voters",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "id",
+                "type": "string"
+            },
+            {
+                "internalType": "bool",
+                "name": "hasVoted",
+                "type": "bool"
+            },
+            {
+                "internalType": "string",
+                "name": "votedFor",
+                "type": "string"
             }
         ],
         "stateMutability": "view",

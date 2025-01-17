@@ -11,17 +11,26 @@ import Login from './page/User/Login'
 import VoterRegistration from './page/User/VoterRegistration'
 import Vote from './page/User/Vote'
 import ManageAdmin from './page/SuperAdmin/ManageAdmin'
-import ViewVote from './page/Admin/ViewVote'
 import ManageVoter from './page/Admin/ManageVoter'
 import AdminDashboard from './page/Admin/AdminDashboard'
 import Result from './page/User/Result'
 
 function App() {
   const [loading, setLoading] = useState(true)
-  const { auth, setAuth, setUserData } = useAuth()
+  const { auth, setAuth, setUserData, setIdentificationNumber, setWalletAddress, setHasRegistered } = useAuth()
 
   useEffect(() => {
-    const { data } = supabase.auth.onAuthStateChange((_event, session) => {
+
+    const voterId = localStorage.getItem('id')
+    const voterWallet = localStorage.getItem('walletAddress')
+
+    if (voterId && voterWallet) {
+      setIdentificationNumber(voterId)
+      setWalletAddress(voterWallet)
+      setHasRegistered(true)
+    }
+
+    supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         console.log(session.user)
         setAuth(session.user)
@@ -73,14 +82,6 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Navigate to="/admin-dashboard" replace />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/view-vote"
-                  element={
-                    <ProtectedRoute>
-                      <ViewVote />
                     </ProtectedRoute>
                   }
                 />

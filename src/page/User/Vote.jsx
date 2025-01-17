@@ -11,6 +11,7 @@ const Vote = () => {
 
     const [value, setValue] = useState(null)
     const [candidate, setCandidate] = useState([])
+    const [candidateSelection, , setCandidateSelection] = useState('')
     const { toggle } = useAuth()
 
     useEffect(() => {
@@ -20,24 +21,25 @@ const Vote = () => {
     const getAllCandidate = async () => {
         try {
             toggle()
-            const candidatesCount = await contract.methods.getCandidatesCount().call()
-
-            const candidates = []
-
-            for (let i = 0; i < candidatesCount; i++) {
-                const candidate = await contract.methods.candidates(i).call()
-                candidates.push(candidate)
-            }
-
-            setCandidate(candidates)
+            const candidateData = await contract.methods.getCandidateList().call()
+            console.log(candidateData)
+            setCandidate(candidateData)
             toggle()
         } catch (error) {
             console.error('Error fetching candidates:', error)
         }
     }
 
-    const submitVote = () => {
+    const submitVote = async () => {
+        try {
+            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
 
+            await contract.methods.vote(candidateSelection).send({ from: accounts[0] });
+
+            console.log(`You have successfully voted for ${candidateSelection}`);
+        } catch (error) {
+            console.error('Error voting for candidate:', error.message);
+        }
     }
 
     const cards = candidate.map((item, index) => (
@@ -45,7 +47,7 @@ const Vote = () => {
             <Group wrap="nowrap" align="flex-start">
                 <Radio.Indicator />
                 <div className="flex items-center">
-                    <Text className={classes.label}>{item}</Text>
+                    <Text className={classes.label}>{item.name}</Text>
                 </div>
             </Group>
         </Radio.Card>

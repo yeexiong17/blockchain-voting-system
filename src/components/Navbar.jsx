@@ -19,14 +19,14 @@ import { useAuth } from '../Context'
 
 export function Navbar() {
     const location = useLocation()
-    const [width, setWidth] = useState(window.innerWidth)
     const [opened, { open, close }] = useDisclosure(false)
     const [burgerOpened, { toggle }] = useDisclosure()
     const [data, setData] = useState([])
 
-    const { signOut, auth } = useAuth()
+    const { signOut, auth, hasRegistered } = useAuth()
 
-    const isMobile = width <= 768;
+    const [width, setWidth] = useState(window.innerWidth)
+    const isMobile = width <= 768
 
 
     const handleWindowSizeChange = () => {
@@ -38,31 +38,31 @@ export function Navbar() {
 
         if (auth.user_metadata.role === 'superadmin') {
             setData([
-                { link: '/admin-dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
                 { link: '/manage-admin', label: 'Manage Admin', icon: IconUserCog },
-                { link: '/manage-vote', label: 'Manage Vote', icon: IconCheckbox },
-                { link: '/manage-voter', label: 'Manage Voter', icon: IconUserCheck },
             ])
         }
         else if (auth.user_metadata.role === 'admin') {
             setData([
                 { link: '/admin-dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
                 { link: '/manage-voter', label: 'Manage Voter', icon: IconUserCheck },
-                { link: '/manage-vote', label: 'Manage Vote', icon: IconCheckbox },
             ])
         }
         else {
-            setData([
+            let data = hasRegistered ? [
                 { link: '/voter-registration', label: 'Vote Registration', icon: IconEdit },
                 { link: '/vote', label: 'Vote', icon: IconFingerprint },
                 { link: '/result', label: 'Result', icon: IconReportAnalytics }
-            ])
+            ] : [
+                { link: '/voter-registration', label: 'Vote Registration', icon: IconEdit },
+            ]
+
+            setData(data)
         }
 
         return () => {
             window.removeEventListener('resize', handleWindowSizeChange)
         }
-    }, [])
+    }, [hasRegistered])
 
     const links = data.map((item) => (
         <Link
