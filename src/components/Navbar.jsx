@@ -44,7 +44,8 @@ export function Navbar() {
         else if (auth.user_metadata.role === 'admin') {
             setData([
                 { link: '/admin-dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
-                { link: '/manage-voter', label: 'Manage Voter', icon: IconUserCheck },
+                { link: '/manage-candidate', label: 'Manage Candidate', icon: IconUserCheck },
+                { link: '/view-logs', label: 'View Log', icon: IconUserCheck },
             ])
         }
         else {

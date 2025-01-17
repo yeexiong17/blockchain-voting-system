@@ -11,9 +11,10 @@ import Login from './page/User/Login'
 import VoterRegistration from './page/User/VoterRegistration'
 import Vote from './page/User/Vote'
 import ManageAdmin from './page/SuperAdmin/ManageAdmin'
-import ManageVoter from './page/Admin/ManageVoter'
+import ManageCandidate from './page/Admin/ManageCandidate'
 import AdminDashboard from './page/Admin/AdminDashboard'
 import Result from './page/User/Result'
+import ContractLog from './page/Admin/ContractLog'
 
 function App() {
   const [loading, setLoading] = useState(true)
@@ -86,10 +87,10 @@ function App() {
                   }
                 />
                 <Route
-                  path="/manage-voter"
+                  path="/manage-candidate"
                   element={
                     <ProtectedRoute>
-                      <ManageVoter />
+                      <ManageCandidate />
                     </ProtectedRoute>
                   }
                 />
@@ -98,6 +99,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/view-logs"
+                  element={
+                    <ProtectedRoute>
+                      <ContractLog />
                     </ProtectedRoute>
                   }
                 />

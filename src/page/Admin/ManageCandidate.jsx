@@ -10,7 +10,7 @@ import { useDisclosure } from "@mantine/hooks"
 import { contract } from '../../blockchainContract'
 import { useAuth } from "../../Context"
 
-const ManageVoter = () => {
+const ManageCandidate = () => {
     const [opened, { open, close }] = useDisclosure(false)
     const [candidateName, setCandidateName] = useState('')
     const [candidate, setCandidate] = useState([])
@@ -92,6 +92,8 @@ const ManageVoter = () => {
     return (
         <CommonLayout>
             <Stack>
+                <p className='font-bold text-2xl'>Manage Candidate</p>
+
                 <Stack>
                     <ScrollArea h={300} className='mt-5'>
                         <Table miw={800} verticalSpacing="sm" stickyHeader>
@@ -126,4 +128,4 @@ const ManageVoter = () => {
     )
 }
 
-export default ManageVoter
+export default ManageCandidate
