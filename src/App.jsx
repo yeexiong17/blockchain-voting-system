@@ -15,21 +15,30 @@ import ManageCandidate from './page/Admin/ManageCandidate'
 import AdminDashboard from './page/Admin/AdminDashboard'
 import Result from './page/User/Result'
 import ContractLog from './page/Admin/ContractLog'
+import VoteSetting from './page/Admin/VoteSetting'
+import { initialization } from './blockchainContract'
 
 function App() {
   const [loading, setLoading] = useState(true)
   const { auth, setAuth, setUserData, setIdentificationNumber, setWalletAddress, setHasRegistered } = useAuth()
 
   useEffect(() => {
-
     const voterId = localStorage.getItem('id')
     const voterWallet = localStorage.getItem('walletAddress')
 
-    if (voterId && voterWallet) {
-      setIdentificationNumber(voterId)
-      setWalletAddress(voterWallet)
-      setHasRegistered(true)
+    const checkConnectedAccount = async () => {
+      const connectedAccount = await getConnectedAccount()
+      if (connectedAccount === voterWallet) {
+        setIdentificationNumber(voterId)
+        setWalletAddress(voterWallet)
+        setHasRegistered(true)
+      }
+      else {
+        localStorage.removeItem('walletAddress')
+        localStorage.removeItem('id')
+      }
     }
+    checkConnectedAccount()
 
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
@@ -43,6 +52,23 @@ function App() {
       setLoading(false)
     })
   }, [])
+
+  const getConnectedAccount = async () => {
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_accounts" })
+
+      if (accounts.length > 0) {
+        console.log("Connected account:", accounts[0])
+        return accounts[0]
+      } else {
+        console.log("No accounts are connected.")
+        return null
+      }
+    } catch (error) {
+      console.error("Error checking connected account:", error)
+      return null
+    }
+  }
 
   return (
     <>
@@ -107,6 +133,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <ContractLog />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/vote-setting"
+                  element={
+                    <ProtectedRoute>
+                      <VoteSetting />
                     </ProtectedRoute>
                   }
                 />

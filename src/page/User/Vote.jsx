@@ -13,6 +13,7 @@ const Vote = () => {
     const [candidate, setCandidate] = useState([])
     const [candidateSelection, , setCandidateSelection] = useState('')
     const { toggle } = useAuth()
+    const [voteStatus, setVoteStatus] = useState(null); // To track voting status
 
     useEffect(() => {
         getAllCandidate()

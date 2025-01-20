@@ -26,15 +26,14 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "endVote",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "startVote",
+        "inputs": [
+            {
+                "internalType": "uint256",
+                "name": "_endTime",
+                "type": "uint256"
+            }
+        ],
+        "name": "setVotingEndTime",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
@@ -56,6 +55,20 @@
         ],
         "name": "CandidateAdded",
         "type": "event"
+    },
+    {
+        "inputs": [],
+        "name": "startVote",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "updateVoteState",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
     },
     {
         "inputs": [
@@ -94,12 +107,12 @@
         "inputs": [
             {
                 "indexed": false,
-                "internalType": "bool",
-                "name": "status",
-                "type": "bool"
+                "internalType": "string",
+                "name": "newState",
+                "type": "string"
             }
         ],
-        "name": "VoteStatusChanged",
+        "name": "VoteStateChanged",
         "type": "event"
     },
     {
@@ -179,6 +192,19 @@
     },
     {
         "inputs": [],
+        "name": "endTime",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
         "name": "getCandidateList",
         "outputs": [
             {
@@ -197,6 +223,19 @@
                 "internalType": "struct Voting.Candidate[]",
                 "name": "",
                 "type": "tuple[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getRemainingTime",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
             }
         ],
         "stateMutability": "view",
@@ -265,19 +304,6 @@
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "voteActive",
-        "outputs": [
-            {
-                "internalType": "bool",
-                "name": "",
-                "type": "bool"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
         "inputs": [
             {
                 "internalType": "address",
@@ -300,6 +326,19 @@
             {
                 "internalType": "string",
                 "name": "votedFor",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "voteState",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
                 "type": "string"
             }
         ],

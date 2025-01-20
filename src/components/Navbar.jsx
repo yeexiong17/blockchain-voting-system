@@ -10,6 +10,8 @@ import {
     IconUserCheck,
     IconLayoutDashboard,
     IconReportAnalytics,
+    IconFileDescription,
+    IconAdjustmentsAlt,
 } from '@tabler/icons-react'
 import { Burger, Drawer, Flex, Group } from '@mantine/core'
 import { useDisclosure } from '@mantine/hooks'
@@ -45,7 +47,8 @@ export function Navbar() {
             setData([
                 { link: '/admin-dashboard', label: 'Dashboard', icon: IconLayoutDashboard },
                 { link: '/manage-candidate', label: 'Manage Candidate', icon: IconUserCheck },
-                { link: '/view-logs', label: 'View Log', icon: IconUserCheck },
+                { link: '/view-logs', label: 'View Log', icon: IconFileDescription },
+                { link: '/vote-setting', label: 'Vote Setting', icon: IconAdjustmentsAlt },
             ])
         }
         else {

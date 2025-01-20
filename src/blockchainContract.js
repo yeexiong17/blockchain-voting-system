@@ -1,7 +1,24 @@
-import Web3 from 'web3'
-import contractABI from "./abi.json"
+import contractABI from "./abi.json";
+import { BrowserProvider, Contract } from "ethers";
 
-const contractAddress = "0xb7e952b075fa4e2f525502fd01b8cce3c4e7560e"
+const contractAddress = "0x15e701749e684fa08caf1679130f41041f46b435";
 
-let web3 = new Web3(window.ethereum)
-export const contract = new web3.eth.Contract(contractABI, contractAddress)
+let provider;
+let signer;
+let contractInstance;
+
+export const initialization = async () => {
+    if (!contractInstance) {
+        provider = new BrowserProvider(window.ethereum);
+        signer = await provider.getSigner();
+        contractInstance = new Contract(contractAddress, contractABI, signer);
+    }
+    return contractInstance;
+};
+
+export const contract = () => {
+    if (!contractInstance) {
+        throw new Error("Contract is not initialized yet. Call `initialization()` first.");
+    }
+    return contractInstance;
+};

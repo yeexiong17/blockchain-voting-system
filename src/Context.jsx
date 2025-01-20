@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
     const [walletAddress, setWalletAddress] = useState('')
     const [identificationNumber, setIdentificationNumber] = useState('')
     const [hasRegistered, setHasRegistered] = useState(false)
+    const [voteState, setVoteState] = useState("Preparation")
 
     const signOut = async () => {
         await supabase.auth.signOut()

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import CommonLayout from '../../components/CommonLayout'
-import { contract } from '../../blockchainContract'
+import { contract, initialization } from '../../blockchainContract'
 import { Stack, Table } from '@mantine/core'
 import { useAuth } from '../../Context'
 
@@ -12,46 +12,35 @@ const ContractLog = () => {
 
     useEffect(() => {
         retrieveAllLogs()
-
-        // console.log(allLogs)
     }, [])
 
     const retrieveAllLogs = async () => {
         toggle()
-        const candidateAddedEvent = await contract.getPastEvents('CandidateAdded', {
-            fromBlock: 0,
-            toBlock: 'latest'
-        })
-        const voterAddedEvent = await contract.getPastEvents('VoterAdded', {
-            fromBlock: 0,
-            toBlock: 'latest'
-        })
-        const voteCastEvent = await contract.getPastEvents('VoteCast', {
-            fromBlock: 0,
-            toBlock: 'latest'
-        })
-        const voteStatusChangedEvent = await contract.getPastEvents('VoteStatusChanged', {
-            fromBlock: 0,
-            toBlock: 'latest'
-        })
+        try {
+            await initialization()
+            const candidateAddedEvent = await contract().queryFilter('CandidateAdded', 0, 'latest')
+            const voterAddedEvent = await contract().queryFilter('VoterAdded', 0, 'latest')
+            const voteCastEvent = await contract().queryFilter('VoteCast', 0, 'latest')
+            const voteStatusChangedEvent = await contract().queryFilter('VoteStateChanged', 0, 'latest')
 
-        const logObject = {
-            "CandidateAdded": candidateAddedEvent,
-            "VoterAdded": voterAddedEvent,
-            "VoteCast": voteCastEvent,
-            "VoteStatusChanged": voteStatusChangedEvent
+            setAllLogs({
+                "CandidateAdded": candidateAddedEvent,
+                "VoterAdded": voterAddedEvent,
+                "VoteCast": voteCastEvent,
+                "VoteStateChanged": voteStatusChangedEvent
+            })
+        } catch (error) {
+            console.log(error)
+        } finally {
+            toggle()
         }
-        console.log(logObject)
-        setAllLogs(logObject)
-        toggle()
     }
 
     const tableMaker = () => {
-
         return Object.keys(allLogs).map((eventType, index) => (
-            <Stack className='mb-8'>
+            <Stack className='mb-8' key={index}>
                 <p className='font-bold text-xl'>{eventType.replace(/([a-z])([A-Z])/g, '$1 $2')}</p>
-                <Table key={index}>
+                <Table>
                     <Table.Thead>
                         <Table.Tr>
                             <Table.Th>Event Type</Table.Th>
@@ -66,7 +55,6 @@ const ContractLog = () => {
     }
 
     const rows = (eventType) => {
-
         let currentLog = allLogs[eventType]
         let rows = []
 
@@ -74,7 +62,7 @@ const ContractLog = () => {
             ? currentLog.forEach((log, index) => {
                 rows.push(
                     <Table.Tr key={index}>
-                        <Table.Td>{log.event}</Table.Td>
+                        <Table.Td>{log.fragment.name}</Table.Td>
                         <Table.Td>{log.transactionHash}</Table.Td>
                         <Table.Td>{log.blockNumber.toString()}</Table.Td>
                     </Table.Tr>

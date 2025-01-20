@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Stepper, Button, Group, Stack, Input, Space } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useAuth } from '../Context'
-import { contract } from '.././blockchainContract'
+import { contract, initialization } from '.././blockchainContract'
 import { Link } from 'react-router-dom'
 
 const VoteRegistrationStepper = () => {
@@ -91,32 +91,42 @@ const VoteRegistrationStepper = () => {
     }
 
     const checkIfUserRegistered = async (id) => {
-        const isRegistered = await contract.methods.isVoterRegistered(walletAddress, id).call()
-        if (isRegistered) {
+        try {
+            await initialization()
+            const isRegistered = await contract().isVoterRegistered(walletAddress, id)
+            if (isRegistered) {
+                localStorage.setItem('walletAddress', walletAddress)
+                localStorage.setItem('id', identificationNumber)
+                setHasRegistered(true)
+                notifications.show({
+                    title: 'Already Registered',
+                    message: 'You are already registered as a voter.',
+                    className: 'w-5/6 ml-auto',
+                    position: 'top-right',
+                    color: 'green',
+                })
+            }
+            return isRegistered
+        } catch (error) {
             notifications.show({
                 title: 'Already Registered',
-                message: 'You are already registered as a voter.',
+                message: error.reason || "Unknown error has occured",
                 className: 'w-5/6 ml-auto',
                 position: 'top-right',
-                color: 'green',
+                color: 'red',
             })
-
-            localStorage.setItem('walletAddress', walletAddress)
-            localStorage.setItem('id', identificationNumber)
-            setHasRegistered(true)
         }
-        return isRegistered
     }
 
     const handleVoterRegistration = async () => {
         let cleanId = identificationNumber.trim()
-        toggle()
 
         try {
+            toggle()
             const userRegistered = await checkIfUserRegistered(cleanId)
             if (userRegistered) return
-
-            await contract.methods.addVoter(cleanId).send({ from: walletAddress })
+            await initialization()
+            await contract().addVoter(cleanId)
 
             localStorage.setItem('walletAddress', walletAddress)
             localStorage.setItem('id', identificationNumber)
@@ -132,7 +142,7 @@ const VoteRegistrationStepper = () => {
         } catch (error) {
             notifications.show({
                 title: 'Voter Registration Error',
-                message: 'Wallet has already registered with a user.',
+                message: error.reason || "Unknown error has occured",
                 className: 'w-5/6 ml-auto',
                 position: 'top-right',
                 color: 'red',

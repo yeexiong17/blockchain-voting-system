@@ -1,9 +1,10 @@
 {
-  "name": "tow-booking-system",
+  "name": "blockchain-voting-system",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@mantine/core": "^7.15.1",
+    "@mantine/dates": "^7.15.2",
     "@mantine/hooks": "^7.15.1",
     "@mantine/notifications": "^7.15.2",
     "@mantinex/mantine-logo": "^1.1.0",
@@ -14,6 +15,8 @@
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "chart.js": "^4.4.7",
+    "dayjs": "^1.11.13",
+    "ethers": "^6.13.5",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.0.2",

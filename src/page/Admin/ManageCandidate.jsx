@@ -7,7 +7,7 @@ import CommonLayout from "../../components/CommonLayout"
 import { supabase } from "../../supabase"
 import { notifications } from "@mantine/notifications"
 import { useDisclosure } from "@mantine/hooks"
-import { contract } from '../../blockchainContract'
+import { contract, initialization } from '../../blockchainContract'
 import { useAuth } from "../../Context"
 
 const ManageCandidate = () => {
@@ -36,9 +36,11 @@ const ManageCandidate = () => {
     })
 
     const getAllCandidate = async () => {
-        toggle()
         try {
-            const candidateData = await contract.methods.getCandidateList().call()
+            toggle()
+            await initialization()
+
+            const candidateData = await contract().getCandidateList()
             if (!candidateData || candidateData.length === 0) {
                 console.log("No candidates found.");
             }
@@ -54,16 +56,8 @@ const ManageCandidate = () => {
 
     const handleCreateNewCandidate = async () => {
         try {
-            const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' })
-
-            const admin = await contract.methods.admin().call()
-
-            if (accounts[0].toLowerCase() !== admin.toLowerCase()) {
-                throw new Error('Only the admin can add candidates.')
-            }
-
             toggle()
-            await contract.methods.addCandidate(candidateName).send({ from: accounts[0] })
+            await contract().addCandidate(candidateName)
 
             notifications.show({
                 title: 'Candidate Added Successfully',
@@ -75,17 +69,17 @@ const ManageCandidate = () => {
 
             setCandidateName('')
             close()
+            getAllCandidate()
         } catch (error) {
             notifications.show({
                 title: 'Add Candidate Error',
-                message: error.message,
+                message: error.reason || "Unknown Error Has Occured",
                 className: 'w-5/6 ml-auto',
                 position: 'top-right',
                 color: 'red'
             })
         } finally {
             toggle()
-            await getAllCandidate()
         }
     }
 
