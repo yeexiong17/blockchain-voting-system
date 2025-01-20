@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Stepper, Button, Group, Stack, Input, Space } from '@mantine/core'
+import { Stepper, Button, Group, Stack, Input, Space, ScrollArea } from '@mantine/core'
 import { notifications } from '@mantine/notifications'
 import { useAuth } from '../Context'
 import { contract, initialization } from '.././blockchainContract'
@@ -162,8 +162,10 @@ const VoteRegistrationStepper = () => {
                     <Space h={10} />
 
                     <p>Account Details:</p>
-                    <p><span className='font-bold'>Wallet Address: </span>{walletAddress}</p>
-                    <p><span className='font-bold'>Identification Number: </span>{identificationNumber}</p>
+                    <ScrollArea h={100}>
+                        <p><span className='font-bold'>Wallet Address: </span>{walletAddress}</p>
+                        <p><span className='font-bold'>Identification Number: </span>{identificationNumber}</p>
+                    </ScrollArea>
 
                     <Space h={30} />
                     <Link to='/vote' className='px-4 py-2 text-white bg-blue-500 rounded'>Go to vote</Link>

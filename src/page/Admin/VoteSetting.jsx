@@ -19,15 +19,14 @@ const VoteSetting = () => {
     const handleSetEndTime = async () => {
         const date = new Date(endTime)
         const timestamp = Math.floor(date.getTime() / 1000)
-        const utcTimestamp = timestamp + 28800
 
         try {
             toggle()
-            await contract().setVotingEndTime(utcTimestamp)
+            await contract().setVotingEndTime(timestamp)
 
             notifications.show({
                 title: 'End Time Updated Successfully',
-                message: `End Time: ${utcTimestamp}`,
+                message: `End time is set to ${timestamp}`,
                 className: 'w-5/6 ml-auto',
                 position: 'top-right',
                 color: 'green'

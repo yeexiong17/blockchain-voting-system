@@ -16,19 +16,22 @@ import AdminDashboard from './page/Admin/AdminDashboard'
 import Result from './page/User/Result'
 import ContractLog from './page/Admin/ContractLog'
 import VoteSetting from './page/Admin/VoteSetting'
-import { initialization } from './blockchainContract'
+import { contract, initialization } from './blockchainContract'
 
 function App() {
   const [loading, setLoading] = useState(true)
-  const { auth, setAuth, setUserData, setIdentificationNumber, setWalletAddress, setHasRegistered } = useAuth()
+  const { voteState, setVoteState, auth, toggle, setAuth, setUserData, setIdentificationNumber, setWalletAddress, setHasRegistered } = useAuth()
 
   useEffect(() => {
     const voterId = localStorage.getItem('id')
     const voterWallet = localStorage.getItem('walletAddress')
 
     const checkConnectedAccount = async () => {
+      toggle()
       const connectedAccount = await getConnectedAccount()
+      toggle()
       if (connectedAccount === voterWallet) {
+        await getVoteState()
         setIdentificationNumber(voterId)
         setWalletAddress(voterWallet)
         setHasRegistered(true)
@@ -38,10 +41,21 @@ function App() {
         localStorage.removeItem('id')
       }
     }
+
+    const getVoteState = async () => {
+      toggle()
+      await initialization()
+      const voteStateValue = await contract().voteState()
+      toggle()
+      console.log(voteStateValue)
+      if (voteStateValue) setVoteState(voteStateValue)
+    }
+
     checkConnectedAccount()
 
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
+        getVoteState()
         console.log(session.user)
         setAuth(session.user)
         setUserData(session.user)
