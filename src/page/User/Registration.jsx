@@ -1,8 +1,9 @@
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 import { supabase } from "../../supabase"
 
 import { Button, Container, PasswordInput, Space, TextInput } from "@mantine/core"
 import { notifications } from '@mantine/notifications'
+import { useAuth } from "../../Context"
 
 const Registration = () => {
 
@@ -10,6 +11,45 @@ const Registration = () => {
     const nameRef = useRef('')
     const passwordRef = useRef('')
     const confirmPasswordRef = useRef('')
+    const { voteState, setVoteState, auth, toggle, setAuth, setUserData, setIdentificationNumber, setWalletAddress, setHasRegistered } = useAuth()
+
+
+    useEffect(() => {
+        const voterId = localStorage.getItem('id')
+        const voterWallet = localStorage.getItem('walletAddress')
+
+        const checkConnectedAccount = async () => {
+            const connectedAccount = await getConnectedAccount()
+
+            if (connectedAccount === voterWallet) {
+                setIdentificationNumber(voterId)
+                setWalletAddress(voterWallet)
+                setHasRegistered(true)
+            }
+            else {
+                localStorage.removeItem('walletAddress')
+                localStorage.removeItem('id')
+            }
+        }
+        checkConnectedAccount()
+
+        const getConnectedAccount = async () => {
+            try {
+                const accounts = await window.ethereum.request({ method: "eth_accounts" })
+
+                if (accounts.length > 0) {
+                    console.log("Connected account:", accounts[0])
+                    return accounts[0]
+                } else {
+                    console.log("No accounts are connected.")
+                    return null
+                }
+            } catch (error) {
+                console.error("Error checking connected account:", error)
+                return null
+            }
+        }
+    }, [])
 
     const handleSignUp = async () => {
 

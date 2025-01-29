@@ -18,40 +18,17 @@ import ContractLog from './page/Admin/ContractLog'
 import VoteSetting from './page/Admin/VoteSetting'
 import { contract, initialization } from './blockchainContract'
 
-function App() {
+const App = () => {
   const [loading, setLoading] = useState(true)
   const { voteState, setVoteState, auth, toggle, setAuth, setUserData, setIdentificationNumber, setWalletAddress, setHasRegistered } = useAuth()
 
   useEffect(() => {
-    const voterId = localStorage.getItem('id')
-    const voterWallet = localStorage.getItem('walletAddress')
-
-    const checkConnectedAccount = async () => {
-      toggle()
-      const connectedAccount = await getConnectedAccount()
-      toggle()
-      if (connectedAccount === voterWallet) {
-        await getVoteState()
-        setIdentificationNumber(voterId)
-        setWalletAddress(voterWallet)
-        setHasRegistered(true)
-      }
-      else {
-        localStorage.removeItem('walletAddress')
-        localStorage.removeItem('id')
-      }
-    }
-
     const getVoteState = async () => {
-      toggle()
       await initialization()
       const voteStateValue = await contract().voteState()
-      toggle()
       console.log(voteStateValue)
       if (voteStateValue) setVoteState(voteStateValue)
     }
-
-    checkConnectedAccount()
 
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
@@ -66,23 +43,6 @@ function App() {
       setLoading(false)
     })
   }, [])
-
-  const getConnectedAccount = async () => {
-    try {
-      const accounts = await window.ethereum.request({ method: "eth_accounts" })
-
-      if (accounts.length > 0) {
-        console.log("Connected account:", accounts[0])
-        return accounts[0]
-      } else {
-        console.log("No accounts are connected.")
-        return null
-      }
-    } catch (error) {
-      console.error("Error checking connected account:", error)
-      return null
-    }
-  }
 
   return (
     <>
