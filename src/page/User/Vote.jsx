@@ -11,11 +11,23 @@ const Vote = () => {
 
     const [candidate, setCandidate] = useState([])
     const [candidateSelection, setCandidateSelection] = useState(null)
+    const [hasVoted, setHasVoted] = useState(false)
     const { toggle, voteState } = useAuth()
 
     useEffect(() => {
         getAllCandidate()
+        checkVotingStatus()
     }, [])
+
+    const checkVotingStatus = async () => {
+        try {
+            await initialization()
+            const voterInfo = await contract().voters(window.ethereum.selectedAddress)
+            setHasVoted(voterInfo.hasVoted)
+        } catch (error) {
+            console.error('Error checking voting status:', error)
+        }
+    }
 
     const getAllCandidate = async () => {
         try {
@@ -31,7 +43,18 @@ const Vote = () => {
     }
 
     const submitVote = async () => {
-        console.log(candidateSelection)
+        if (!candidateSelection) return
+        try {
+            toggle()
+            await initialization()
+            const tx = await contract().vote(candidateSelection)
+            await tx.wait()
+            setHasVoted(true)
+            toggle()
+        } catch (error) {
+            console.error('Error submitting vote:', error)
+            toggle()
+        }
     }
 
     const cards = candidate.map((item, index) => {
@@ -49,9 +72,14 @@ const Vote = () => {
 
     return (
         <CommonLayout>
-            {
-                voteState == "Ongoing"
-                    ? <>
+            {voteState === "Ongoing" ? (
+                hasVoted ? (
+                    <div className="text-center">
+                        <Text size="xl" fw={700}>Thank you for voting!</Text>
+                        <Text>Your vote has been recorded successfully.</Text>
+                    </div>
+                ) : (
+                    <>
                         <Radio.Group
                             value={candidateSelection}
                             onChange={setCandidateSelection}
@@ -69,12 +97,17 @@ const Vote = () => {
                         </Radio.Group>
 
                         <Space h="md" />
-                        <Button onClick={() => submitVote()}>
+                        <Button 
+                            onClick={() => submitVote()}
+                            disabled={!candidateSelection}
+                        >
                             Confirm
                         </Button>
                     </>
-                    : <p className="font-bold text-xl">Vote has not started yet!</p>
-            }
+                )
+            ) : (
+                <p className="font-bold text-xl">Vote has not started yet!</p>
+            )}
         </CommonLayout>
     )
 }
