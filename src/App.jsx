@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 
 import { supabase } from './supabase'
 import { useAuth } from './Context'
@@ -19,20 +19,22 @@ import VoteSetting from './page/Admin/VoteSetting'
 import { contract, initialization } from './blockchainContract'
 
 const App = () => {
+
+  const location = useLocation()
   const [loading, setLoading] = useState(true)
   const { voteState, setVoteState, auth, toggle, setAuth, setUserData, setIdentificationNumber, setWalletAddress, setHasRegistered } = useAuth()
 
   useEffect(() => {
-    const getVoteState = async () => {
-      await initialization()
-      const voteStateValue = await contract().voteState()
-      console.log(voteStateValue)
-      if (voteStateValue) setVoteState(voteStateValue)
+
+    if (location.pathname !== '/login' && location.pathname !== '/register') {
+      const voterId = localStorage.getItem('id')
+      const voterWallet = localStorage.getItem('walletAddress')
+
+      checkConnectedAccount(voterId, voterWallet)
     }
 
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-        getVoteState()
         console.log(session.user)
         setAuth(session.user)
         setUserData(session.user)
@@ -43,6 +45,54 @@ const App = () => {
       setLoading(false)
     })
   }, [])
+
+  const checkConnectedAccount = async (voterId, voterWallet) => {
+    toggle()
+    const connectedAccount = await getConnectedAccount()
+    toggle()
+    if (connectedAccount === voterWallet) {
+      console.log('helloo')
+      await getVoteState()
+      setIdentificationNumber(voterId)
+      setWalletAddress(voterWallet)
+      setHasRegistered(true)
+    }
+    else {
+      localStorage.removeItem('walletAddress')
+      localStorage.removeItem('id')
+    }
+  }
+
+  const getVoteState = async () => {
+    toggle()
+    try {
+      await initialization()
+      const voteStateValue = await contract().voteState()
+      console.log("Vote State:", voteStateValue)
+      if (voteStateValue) setVoteState(voteStateValue)
+    } catch (error) {
+      console.error("Error fetching vote state:", error)
+    } finally {
+      toggle()
+    }
+  }
+
+  const getConnectedAccount = async () => {
+    try {
+      const accounts = await window.ethereum.request({ method: "eth_accounts" })
+      if (accounts.length > 0) {
+        console.log("Connected account:", accounts[0])
+        return accounts[0]
+      } else {
+        console.log("No accounts are connected.")
+        return null
+      }
+    } catch (error) {
+      console.error("Error checking connected account:", error)
+      return null
+    }
+  }
+
 
   return (
     <>

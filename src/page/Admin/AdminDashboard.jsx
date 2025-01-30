@@ -50,7 +50,7 @@ const AdminDashboard = () => {
         }
 
         const barCanvas = barChartRef.current.getContext('2d')
-        const barLabels = candidateName
+        const barLabels = ["Candidate"]
         const barData = {
             labels: barLabels,
             datasets: candidateName.map((name, index) => {
@@ -83,9 +83,13 @@ const AdminDashboard = () => {
             <Stack>
                 <p className='font-bold text-2xl'>Dashboard</p>
 
-                <Flex className="w-3/4">
-                    <canvas ref={barChartRef}></canvas>
-                </Flex>
+                {
+                    candidate.length > 0
+                        ? <Flex className="w-3/4">
+                            <canvas ref={barChartRef}></canvas>
+                        </Flex>
+                        : <p>No candidate found</p>
+                }
             </Stack>
         </CommonLayout>
     )

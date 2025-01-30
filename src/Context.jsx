@@ -16,6 +16,10 @@ export const AuthProvider = ({ children }) => {
 
     const signOut = async () => {
         await supabase.auth.signOut()
+        localStorage.removeItem('walletAddress')
+        localStorage.removeItem('id')
+        setHasRegistered(false)
+        setVoteState("Preparation")
     }
 
     const toggle = () => {

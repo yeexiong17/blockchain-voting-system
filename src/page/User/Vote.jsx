@@ -6,6 +6,7 @@ import CommonLayout from "../../components/CommonLayout"
 import classes from '../../styles/radio.module.css'
 import { contract, initialization } from "../../blockchainContract"
 import { useAuth } from "../../Context"
+import { notifications } from "@mantine/notifications"
 
 const Vote = () => {
 
@@ -50,9 +51,24 @@ const Vote = () => {
             const tx = await contract().vote(candidateSelection)
             await tx.wait()
             setHasVoted(true)
-            toggle()
+            notifications.show({
+                title: 'Vote Successfully',
+                className: 'w-5/6 ml-auto',
+                position: 'top-right',
+                color: 'green'
+            })
         } catch (error) {
+
+            notifications.show({
+                title: 'Vote Error',
+                message: error.reason || "Unknown error has occured",
+                className: 'w-5/6 ml-auto',
+                position: 'top-right',
+                color: 'red'
+            })
             console.error('Error submitting vote:', error)
+        }
+        finally {
             toggle()
         }
     }
@@ -97,7 +113,7 @@ const Vote = () => {
                         </Radio.Group>
 
                         <Space h="md" />
-                        <Button 
+                        <Button
                             onClick={() => submitVote()}
                             disabled={!candidateSelection}
                         >

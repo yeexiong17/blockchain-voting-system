@@ -3,7 +3,7 @@ import CommonLayout from '../../components/CommonLayout'
 import { Button, Flex, Space, Stack } from '@mantine/core'
 import { DateTimePicker } from '@mantine/dates'
 import { notifications } from '@mantine/notifications'
-import { contract, provider } from '../../blockchainContract'
+import { contract, initialization } from '../../blockchainContract'
 import { useAuth } from '../../Context'
 
 const VoteSetting = () => {
@@ -11,6 +11,7 @@ const VoteSetting = () => {
     const { toggle } = useAuth()
 
     const [endTime, setEndTime] = useState("")
+    const [remainingTime, setRemainingTime] = useState(0)
 
     useEffect(() => {
         console.log(endTime)
@@ -22,6 +23,7 @@ const VoteSetting = () => {
 
         try {
             toggle()
+            await initialization()
             await contract().setVotingEndTime(timestamp)
 
             notifications.show({
@@ -35,7 +37,7 @@ const VoteSetting = () => {
         } catch (error) {
             notifications.show({
                 title: 'Failed To Update End Time',
-                message: error.reason || "Unknown error has occured",
+                message: error.reason,
                 className: 'w-5/6 ml-auto',
                 position: 'top-right',
                 color: 'red'
@@ -69,6 +71,31 @@ const VoteSetting = () => {
         }
     }
 
+    const handleCheckVoteEnded = async () => {
+        try {
+            toggle()
+            await contract.updateVoteState()
+
+            notifications.show({
+                title: 'Vote State Updated Successfully',
+                message: 'Vote has ended',
+                className: 'w-5/6 ml-auto',
+                position: 'top-right',
+                color: 'green'
+            });
+        } catch (error) {
+            notifications.show({
+                title: 'Vote has not ended',
+                className: 'w-5/6 ml-auto',
+                position: 'top-right',
+                color: 'red'
+            });
+        }
+        finally {
+            toggle()
+        }
+    }
+
     return (
         <CommonLayout>
             <p className='font-bold text-2xl'>Settings</p>
@@ -86,6 +113,10 @@ const VoteSetting = () => {
                     <Button onClick={() => handleSetEndTime()}>Set Date & Time</Button>
                 </Flex>
                 <Button onClick={() => handleStartVote()}>Start Vote</Button>
+
+                <Flex className='mt-6' align="center">
+                    <Button onClick={() => handleCheckVoteEnded()}>Check Vote Has Ended</Button>
+                </Flex>
             </Stack>
         </CommonLayout>
     )

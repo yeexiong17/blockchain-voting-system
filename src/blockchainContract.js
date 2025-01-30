@@ -1,24 +1,34 @@
-import contractABI from "./abi.json";
-import { BrowserProvider, Contract } from "ethers";
+import contractABI from "./abi.json"
+import { BrowserProvider, Contract } from "ethers"
 
-const contractAddress = "0xf5335449301bfbba4e62966ef78067f95182c10a";
+const contractAddress = "0x534655007c840257a1b0bec7fa7172c8f121bca8"
 
-let provider;
-let signer;
-let contractInstance;
+let provider
+let signer
+let contractInstance
 
 export const initialization = async () => {
-    if (!contractInstance) {
-        provider = new BrowserProvider(window.ethereum);
-        signer = await provider.getSigner();
-        contractInstance = new Contract(contractAddress, contractABI, signer);
+    try {
+        if (!contractInstance) {
+            provider = new BrowserProvider(window.ethereum)
+            signer = await provider.getSigner()
+            contractInstance = new Contract(contractAddress, contractABI, signer)
+        }
+        return contractInstance
+    } catch (error) {
+        if (error.code === 4001) {
+            console.error("User rejected the request:", error.message)
+            alert("You need to allow access to your wallet to use this application.")
+        } else {
+            console.error("An error occurred during initialization:", error)
+        }
+        throw error
     }
-    return contractInstance;
-};
+}
 
 export const contract = () => {
     if (!contractInstance) {
-        throw new Error("Contract is not initialized yet. Call `initialization()` first.");
+        throw new Error("Contract is not initialized yet. Call `initialization()` first.")
     }
-    return contractInstance;
-};
+    return contractInstance
+}
