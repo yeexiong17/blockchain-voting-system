@@ -71,9 +71,18 @@ const AdminDashboard = () => {
         chartInstance = new Chart(barCanvas, {
             type: 'bar',
             data: barData,
-            type: 'bar',
             options: {
                 indexAxis: 'y',
+                scales: {
+                    x: {
+                        ticks: {
+                            stepSize: 1,
+                            callback: function (value) {
+                                return Math.floor(value)
+                            }
+                        }
+                    }
+                }
             }
         });
     }

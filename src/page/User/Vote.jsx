@@ -121,6 +121,11 @@ const Vote = () => {
                         </Button>
                     </>
                 )
+            ) : voteState === "Ended" ? (
+                <div className="text-center">
+                    <Text size="xl" fw={700} color="red">Vote has ended!</Text>
+                    <Text>The voting period is now closed.</Text>
+                </div>
             ) : (
                 <p className="font-bold text-xl">Vote has not started yet!</p>
             )}

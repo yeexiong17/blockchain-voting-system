@@ -8,13 +8,14 @@ import { Link } from 'react-router-dom'
 const VoteRegistrationStepper = () => {
     const [active, setActive] = useState(0)
     const [highestStepVisited, setHighestStepVisited] = useState(false)
+    const [idError, setIdError] = useState('')
 
     const { walletAddress, setWalletAddress, identificationNumber, setIdentificationNumber, hasRegistered, setHasRegistered, toggle } = useAuth()
 
     const handleStepChange = (step) => {
         setHighestStepVisited(false)
 
-        if ((!walletAddress && step === 1) || (!identificationNumber && step === 2)) {
+        if (!walletAddress && step === 1) {
             notifications.show({
                 title: 'Step Error',
                 message: 'Please complete current step before proceeding',
@@ -23,6 +24,20 @@ const VoteRegistrationStepper = () => {
                 color: 'red'
             })
             return
+        }
+
+        if (step === 2) {
+            const error = validateMalaysianIC(identificationNumber)
+            if (error) {
+                notifications.show({
+                    title: 'Invalid IC Number',
+                    message: error,
+                    className: 'w-5/6 ml-auto',
+                    position: 'top-right',
+                    color: 'red'
+                })
+                return
+            }
         }
 
         if (step === 3) {
@@ -152,6 +167,41 @@ const VoteRegistrationStepper = () => {
         }
     }
 
+    const validateMalaysianIC = (ic) => {
+        const cleanIC = ic.replace(/[\s-]/g, '')
+
+        if (!/^\d{12}$/.test(cleanIC)) {
+            return 'IC number must be 12 digits'
+        }
+
+        const year = parseInt(cleanIC.substring(0, 2))
+        const month = parseInt(cleanIC.substring(2, 4))
+        const day = parseInt(cleanIC.substring(4, 6))
+
+        if (month < 1 || month > 12) {
+            return 'Invalid month in IC number'
+        }
+
+        const daysInMonth = new Date(2000 + year, month, 0).getDate()
+        if (day < 1 || day > daysInMonth) {
+            return 'Invalid day in IC number'
+        }
+
+        return ''
+    }
+
+    const handleICChange = (event) => {
+        const value = event.currentTarget.value
+        setIdentificationNumber(value)
+
+        if (value) {
+            const error = validateMalaysianIC(value)
+            setIdError(error)
+        } else {
+            setIdError('')
+        }
+    }
+
     return (
 
         hasRegistered
@@ -220,8 +270,10 @@ const VoteRegistrationStepper = () => {
                             <div className='w-72'>
                                 <Input
                                     value={identificationNumber}
-                                    placeholder="Enter identification number"
-                                    onChange={(event) => setIdentificationNumber(event.currentTarget.value)}
+                                    placeholder="YYMMDD-PB-XXXX"
+                                    onChange={handleICChange}
+                                    error={idError}
+                                    description="Format: YYMMDD-PB-XXXX (e.g., 900101-14-5566)"
                                 />
                             </div>
                         </Stack>

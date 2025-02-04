@@ -71,31 +71,6 @@ const VoteSetting = () => {
         }
     }
 
-    const handleCheckVoteEnded = async () => {
-        try {
-            toggle()
-            await contract.updateVoteState()
-
-            notifications.show({
-                title: 'Vote State Updated Successfully',
-                message: 'Vote has ended',
-                className: 'w-5/6 ml-auto',
-                position: 'top-right',
-                color: 'green'
-            });
-        } catch (error) {
-            notifications.show({
-                title: 'Vote has not ended',
-                className: 'w-5/6 ml-auto',
-                position: 'top-right',
-                color: 'red'
-            });
-        }
-        finally {
-            toggle()
-        }
-    }
-
     return (
         <CommonLayout>
             <p className='font-bold text-2xl'>Settings</p>
@@ -113,10 +88,6 @@ const VoteSetting = () => {
                     <Button onClick={() => handleSetEndTime()}>Set Date & Time</Button>
                 </Flex>
                 <Button onClick={() => handleStartVote()}>Start Vote</Button>
-
-                <Flex className='mt-6' align="center">
-                    <Button onClick={() => handleCheckVoteEnded()}>Check Vote Has Ended</Button>
-                </Flex>
             </Stack>
         </CommonLayout>
     )

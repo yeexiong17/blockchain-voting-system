@@ -64,8 +64,8 @@ const App = () => {
   }
 
   const getVoteState = async () => {
-    toggle()
     try {
+      toggle()
       await initialization()
       const voteStateValue = await contract().voteState()
       console.log("Vote State:", voteStateValue)
@@ -76,6 +76,12 @@ const App = () => {
       toggle()
     }
   }
+
+  useEffect(() => {
+    if (auth && auth?.user_metadata?.role !== 'superadmin') {
+      getVoteState()
+    }
+  }, [auth])
 
   const getConnectedAccount = async () => {
     try {
