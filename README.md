@@ -1,70 +1,106 @@
-# Getting Started with Create React App
+# Blockchain Voting System
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A decentralized voting system built with React and Ethereum smart contracts.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+- Node.js (v14 or higher)
+- MetaMask browser extension
+- Modern web browser (Chrome, Firefox, etc.)
 
-### `npm start`
+## Installation
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Clone the repository (git clone https://github.com/yeexiong17/blockchain-voting-system.git)
+2. Install dependencies (npm install)
+3. Start the development server (npm start)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+The application will be available at `http://localhost:3000`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Smart Contract Configuration
 
-### `npm run build`
+After deploying a new smart contract, you need to update the contract configuration:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+1. Navigate to `src/blockchainContract.js`
+2. Update the contract address:
+3. Update the ABI:
+   - After deploying your new contract, copy the new ABI
+   - Navigate to `src/abi.json`
+   - Replace the entire content with your new contract's ABI
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+**Note**: Make sure the contract address and ABI match your deployed contract, or the application won't be able to interact with the blockchain.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## User Guide
 
-### `npm run eject`
+### For Administrators
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### Initial Setup
+1. Log in with admin credentials (admin1@gmail.com, asdflkjh)
+2. Navigate to "Vote Setting" page
+3. Set up the voting period:
+   - Select an end date and time for the voting period
+   - Click "Set End Time" to confirm
+4. Add candidates:
+   - Go to "Manage Candidate" page
+   - Enter candidate name
+   - Click "Add Candidate" button
+   - Add at least 2 candidates before starting the vote
+5. Start the vote:
+   - Return to "Vote Setting" page
+   - Click "Start Vote" button
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### Monitor Voting
+- View real-time voting results in the "Admin Dashboard"
+- Monitor voting activities in "View Logs"
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### For Voters
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+#### Registration Process
+1. Create an account or log in
+2. Navigate to "Voter Registration"
+3. Complete the registration steps:
+   - **Step 1**: Connect MetaMask wallet
+     - Click "Connect Wallet" button
+     - Approve the MetaMask connection
+   - **Step 2**: Enter identification number
+     - Format: YYMMDD-PB-XXXX (e.g., 900101-14-5566)
+   - **Step 3**: Review and confirm registration details
+     - Click "Complete Register" to finish registration
 
-## Learn More
+#### Voting Process
+1. Go to the "Vote" page
+2. Wait for voting period to start (if not already started)
+3. When voting is active:
+   - Select your preferred candidate
+   - Click "Confirm" to cast your vote
+4. View your voting status:
+   - "Thank you for voting!" message appears after successful vote
+   - View results in the "Result" page
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Important Notes
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Make sure MetaMask is installed and connected to the correct network
+- Keep your wallet address and identification number secure
+- Each voter can only vote once
+- Votes cannot be changed after submission
+- Voting results are visible to all users
+- The voting period cannot be extended once started
 
-### Code Splitting
+## States of Voting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+- **Preparation**: Initial state where admin sets up the vote
+- **Ongoing**: Active voting period where users can cast votes
+- **Ended**: Voting period has concluded, results are final
 
-### Analyzing the Bundle Size
+## Error Handling
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+- If you encounter MetaMask connection issues:
+  1. Ensure MetaMask is installed
+  2. Check if you're connected to the correct network
+  3. Try refreshing the page
+  4. Make sure you have sufficient funds for gas fees
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+- For registration issues:
+  1. Verify your identification number format
+  2. Ensure you're using a unique wallet address
+  3. Check if you've already registered
