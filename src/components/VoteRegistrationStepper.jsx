@@ -4,6 +4,7 @@ import { notifications } from '@mantine/notifications'
 import { useAuth } from '../Context'
 import { contract, initialization } from '.././blockchainContract'
 import { Link } from 'react-router-dom'
+import { ethers } from 'ethers'
 
 const VoteRegistrationStepper = () => {
     const [active, setActive] = useState(0)
@@ -105,10 +106,16 @@ const VoteRegistrationStepper = () => {
         }
     }
 
+    const hashIdentificationNumber = (id) => {
+        const cleanId = id.replace(/[\s-]/g, '').toLowerCase()
+        return ethers.keccak256(ethers.toUtf8Bytes(cleanId))
+    }
+
     const checkIfUserRegistered = async (id) => {
         try {
             await initialization()
-            const isRegistered = await contract().isVoterRegistered(walletAddress, id)
+            const hashedId = hashIdentificationNumber(id)
+            const isRegistered = await contract().isVoterRegistered(walletAddress, hashedId)
             if (isRegistered) {
                 localStorage.setItem('walletAddress', walletAddress)
                 localStorage.setItem('id', identificationNumber)
@@ -125,7 +132,7 @@ const VoteRegistrationStepper = () => {
         } catch (error) {
             notifications.show({
                 title: 'Already Registered',
-                message: error.reason || "Unknown error has occured",
+                message: error.reason || "Unknown error has occurred",
                 className: 'w-5/6 ml-auto',
                 position: 'top-right',
                 color: 'red',
@@ -140,8 +147,10 @@ const VoteRegistrationStepper = () => {
             toggle()
             const userRegistered = await checkIfUserRegistered(cleanId)
             if (userRegistered) return
+
             await initialization()
-            await contract().addVoter(cleanId)
+            const hashedId = hashIdentificationNumber(cleanId)
+            await contract().addVoter(hashedId)
 
             localStorage.setItem('walletAddress', walletAddress)
             localStorage.setItem('id', identificationNumber)
@@ -157,7 +166,7 @@ const VoteRegistrationStepper = () => {
         } catch (error) {
             notifications.show({
                 title: 'Voter Registration Error',
-                message: error.reason || "Unknown error has occured",
+                message: error.reason || "Unknown error has occurred",
                 className: 'w-5/6 ml-auto',
                 position: 'top-right',
                 color: 'red',

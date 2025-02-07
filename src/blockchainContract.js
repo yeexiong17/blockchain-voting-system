@@ -1,7 +1,7 @@
 import contractABI from "./abi.json"
 import { BrowserProvider, Contract } from "ethers"
 
-const contractAddress = "0x67e762858a7fb128cf133f5e5007f359ea1ade00"
+const contractAddress = "0xb97b831a6bc03054cb2c20ff7811b87b87705423"
 
 let provider
 let signer

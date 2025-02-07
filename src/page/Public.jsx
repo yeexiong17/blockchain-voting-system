@@ -17,7 +17,7 @@ const Public = () => {
                 })}
             >
                 <div>
-                    <p className='font-bold text-3xl'>App Name</p>
+                    <p className='font-bold text-3xl'>Blockchain Voting System</p>
                 </div>
 
                 <Stack className='mt-auto'>
